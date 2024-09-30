@@ -5,8 +5,11 @@ body {
 .top-bit {
   display: block;
   text-align: center;
-  background-color: aquamarine;
+  background-color: lightgray;
   height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .grid-container {
@@ -27,4 +30,5 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
+    animation-fill-mode: forwards;
   }
