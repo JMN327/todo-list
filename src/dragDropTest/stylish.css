@@ -32,3 +32,11 @@ body {
     position: relative;
     animation-fill-mode: forwards;
   }
+  
+  .grabbed {
+    background-color: greenyellow;
+  }
+
+/*   .elder, .younger {
+    background-color: aquamarine;
+  } */
