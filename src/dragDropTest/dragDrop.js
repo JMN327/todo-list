@@ -36,11 +36,9 @@ gridContainer.addEventListener("mousemove", (event) => {
     return;
   }
 
-
-
   if (elder) {
-    let elderSwitchCheck = row.getBoundingClientRect().top;
-    if (elderSwitchCheck < elderY) {
+    let switchCheck = row.getBoundingClientRect().top;
+    if (switchCheck < elderY) {
       switchOffset += gap + elder.offsetHeight;
       row.parentNode.insertBefore(row, elder);
       getImmediateSiblings(row);
@@ -48,8 +46,8 @@ gridContainer.addEventListener("mousemove", (event) => {
   }
 
   if (younger) {
-    let youngerSwitchCheck = row.getBoundingClientRect().top;
-    if (youngerSwitchCheck > youngerY) {
+    let switchCheck = row.getBoundingClientRect().top;
+    if (switchCheck > youngerY) {
       switchOffset -= gap + younger.offsetHeight;
       row.parentNode.insertBefore(younger, row);
       getImmediateSiblings(row);
