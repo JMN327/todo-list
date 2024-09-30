@@ -7,8 +7,8 @@
 
 :root {
     
-    --switch-height: 24px;
-    --circle-margin: 3px;
+    --switch-height: .75rem;
+    --circle-margin: 2px;
     --circle-radius: calc(var(--switch-height) - (2 * (var(--circle-margin))));
     --switch-width: calc(var(--switch-height) + var(--circle-radius));
 }
@@ -50,7 +50,7 @@
     bottom: var(--circle-margin);
     background-color: white;
     /* -webkit-transition: 1.4s; */
-    transition:  .4s;
+    transition:  .1s;
   }
   
   input:checked + .slider {
