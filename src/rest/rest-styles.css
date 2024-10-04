@@ -24,7 +24,13 @@ body {
 }
 
 .book-cards-wrapper {
-  overflow-y:scroll;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+.book-cards-wrapper::-webkit-scrollbar { /* WebKit */
+  width: 0;
+  height: 0;
 }
 
 #book-cards {
@@ -36,7 +42,7 @@ body {
   display: grid;
   grid-template-columns: 7fr 1fr;
   background-color: lightgray;
-  border-radius: 4px;
+  border-radius: 15px;
   font-size: .75rem;
   line-height: 1rem;
   height:120px;
