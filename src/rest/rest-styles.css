@@ -25,12 +25,31 @@ body {
 
 .book-cards-wrapper {
   overflow-y: scroll;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  /* scrollbar-width: none;
+  -ms-overflow-style: none;  */
 }
 .book-cards-wrapper::-webkit-scrollbar { /* WebKit */
-  width: 0;
-  height: 0;
+/*   width: 0;
+  height: 0; */
+  width: 15px;
+}
+.book-cards-wrapper::-webkit-scrollbar-track {
+  background: rgb(235, 235, 235); 
+  border-radius: 6px;
+
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  background-clip: padding-box;
+}
+.book-cards-wrapper::-webkit-scrollbar-thumb {
+  background: lightgray; 
+  border-radius: 7.5px;
+  height: 15px;
+  
+}
+
+.book-cards-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 
 #book-cards {
@@ -47,8 +66,6 @@ body {
   line-height: 1rem;
   height:120px;
   /* transition: .2s; */
-
-  user-select: none;
 
 }
 /* .book-wrapper:hover {
