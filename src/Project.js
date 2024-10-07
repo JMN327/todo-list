@@ -22,15 +22,12 @@ export default class Project {
     this.#priority = priority;
     this.#completed = completed;
     this.#todoArr = todoArr;
-    this.info = function () {
-      return (
-        `title: ${this.#title}
-description: ${this.#description}
-due date: ${format(this.#dueDate, "MMM/dd/yyyy")}
-priority: ${this.#priority}
-todoArr: ${this.#todoArr}
-completed: ` + (this.#completed ? `Yes` : `no`)
-      );
+    this.jsonData = function () {
+      return `{"title":"${this.#title}","description":"${
+        this.#description
+      }","dueDate":"${format(this.#dueDate, "MMM/dd/yyyy")}","priority":"${
+        this.#priority
+      }","todoArr": "${this.#todoArr}","completed":"${this.#completed}"}`;
     };
   }
   set title(newTitle) {
@@ -82,6 +79,9 @@ completed: ` + (this.#completed ? `Yes` : `no`)
   }
 
   set todoArr(newTodoArr) {
+/*     if (!(newTodoArr instanceof Array)) {
+      throw "Variable not of type Array";
+    } */
     this.#todoArr = newTodoArr;
   }
 

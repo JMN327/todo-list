@@ -21,15 +21,12 @@ export default class Todo {
     this.#priority = priority;
     this.#completed = completed;
     this.#project = project;
-    this.info = function () {
-      return (
-        `title: ${this.#title}
-description: ${this.#description}
-due date: ${format(this.#dueDate, "MMM/dd/yyyy")}
-priority: ${this.#priority}
-project: ${this.#project}
-completed: ` + (this.#completed ? `Yes` : `no`)
-      );
+    this.jsonData = function () {
+      return `{"title":"${this.#title}","description":"${
+        this.#description
+      }","dueDate":"${format(this.#dueDate, "MMM/dd/yyyy")}","priority":"${
+        this.#priority
+      }","project": "${this.#project}","completed":"${this.#completed}"}`;
     };
   }
   set title(newTitle) {
