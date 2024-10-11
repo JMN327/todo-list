@@ -1,37 +1,22 @@
 import Todo from "./Todo.js";
 import Project from "./Project.js";
-import storageAvailable from "./localStorageCheck.js"
+import storageAvailable from "./localStorage.js";
 
 console.log("Index.js initiated");
-console.log("Storage Available: " +storageAvailable("localStorage"))
-let testProject1 = new Project();
+console.log("Storage Available: " + storageAvailable("localStorage"));
 
-testProject1.title = "Project1";
-testProject1.description = "test Project Object1";
-testProject1.dueDate = new Date(2024, 0, 1);
-testProject1.priority = 3;
-testProject1.completed = false;
-testProject1.todoArr = ["test1", "test2"];
-console.log(testProject1.jsonData(), typeof testProject1.jsonData())
+const newProject1 = new Project;
 
-localStorage.setItem("test1", JSON.stringify(testProject1.jsonData()));
+newProject1.title = "one"
 
-let storedProject1 = JSON.parse(localStorage.getItem("test1"));
+Project.saveToLocalStorage(newProject1)
 
-/* console.log(storedProject1, typeof storedProject1, storedProject1.description) */
+const newProject2 = new Project;
 
-let testProject2 = new Project();
+newProject2.title = "two"
 
-testProject2.title = "Project2";
-testProject2.description = "test Project Object2";
-testProject2.dueDate = new Date(2024, 1, 5);
-testProject2.priority = 4;
-testProject2.completed = false;
-testProject2.todoArr = ["test3", "test4"];
-console.log(testProject2.jsonData(), typeof testProject2.jsonData());
+Project.saveToLocalStorage(newProject2)
 
-localStorage.setItem("test2", JSON.stringify(testProject2.jsonData()));
+const allProjects = Project.retrieveAllFromLocalStorage()
 
-let storedProject2 = JSON.parse(localStorage.getItem("test2"));
-
-console.log(storedProject1, storedProject2);
+console.log(allProjects);
