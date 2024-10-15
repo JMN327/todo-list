@@ -7,28 +7,91 @@ export default class Todo {
   #priority;
   #completed;
   #project;
-  constructor(
+  #storageId;
+
+  constructor({
     title = "",
     description = "",
     dueDate = null,
     priority = 0,
     completed = false,
-    project = null
-  ) {
+    project = "default",
+    storageId = "T" + Todo.#todoTicker,
+  } = {}) {
     this.#title = title;
     this.#description = description;
     this.#dueDate = dueDate;
     this.#priority = priority;
     this.#completed = completed;
     this.#project = project;
-    this.jsonData = function () {
-      return `{"title":"${this.#title}","description":"${
-        this.#description
-      }","dueDate":"${format(this.#dueDate, "MMM/dd/yyyy")}","priority":"${
-        this.#priority
-      }","project": "${this.#project}","completed":"${this.#completed}"}`;
-    };
+    this.#storageId = storageId;
   }
+
+  static get #todoTicker() {
+    let x = parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0));
+    x++;
+    localStorage.setItem("todoTicker", JSON.stringify(x));
+    return x.toString();
+  }
+
+  static saveToLocalStorage(Todo) {
+    let data = {
+      title: Todo.#title,
+      description: Todo.#description,
+      dueDate: format(Todo.#dueDate, "dd-MMM-yyyy"),
+      priority: Todo.#priority,
+      completed: Todo.#completed,
+      project: Todo.#project,
+      storageId: Todo.#storageId,
+    };
+
+    //check if array of keys are being stored in todoIdArray and initiate them if not
+    if (localStorage.getItem("todoIdArray") == null) {
+      localStorage.setItem("todoIdArray", "[]");
+    }
+
+    //retrieve todoIdArray
+    let todoIdArray = Array.from(
+      JSON.parse(localStorage.getItem("todoIdArray"))
+    );
+
+    // check if this todo already exists in storage.  If not add it to todoIdArray
+    if (!todoIdArray.includes(Todo.#storageId)) {
+      todoIdArray.push(Todo.#storageId);
+      localStorage.setItem("todoIdArray", JSON.stringify(todoIdArray));
+    }
+
+    // write the todo data to storage
+    localStorage.setItem(Todo.#storageId, JSON.stringify(data));
+  }
+
+  static retrieveSingleFromLocalStorage(storageId) {
+    let todoIdArray = [];
+    if (localStorage.getItem("todoIdArray") == null) {
+      throw "No Todos saved in Local Storage index";
+    } else {
+      todoIdArray = Array.from(JSON.parse(localStorage.getItem("todoIdArray")));
+    }
+    if (todoIdArray.includes(storageId)) {
+      let storedInfo = JSON.parse(localStorage.getItem(storageId));
+      return new Todo(storedInfo);
+    }
+  }
+
+  static retrieveAllFromLocalStorage() {
+    let todoIdArray = [];
+    if (localStorage.getItem("todoIdArray") == null) {
+      throw "No Todos saved in Local Storage index";
+    } else {
+      todoIdArray = Array.from(JSON.parse(localStorage.getItem("todoIdArray")));
+    }
+    let todos = [];
+    todoIdArray.forEach((storageId) => {
+      todos.push(new Todo(JSON.parse(localStorage.getItem(storageId))));
+    });
+    return todos;
+  }
+
   set title(newTitle) {
     newTitle = newTitle.trim();
     if (newTitle === "") {
@@ -54,6 +117,7 @@ export default class Todo {
   }
 
   set dueDate(newDueDate) {
+    newDueDate = format(newDueDate, "dd-MMM-yyyy");
     this.#dueDate = newDueDate;
   }
 
@@ -83,5 +147,9 @@ export default class Todo {
 
   get project() {
     return this.#project;
+  }
+
+  get storageId() {
+    return this.#storageId;
   }
 }

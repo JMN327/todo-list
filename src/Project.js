@@ -16,7 +16,7 @@ export default class Project {
     priority = 0,
     completed = false,
     todoArr = [],
-    storageId = Date.now().toString(),
+    storageId = "P" + Project.#projectTicker,
   } = {}) {
     this.#title = title;
     this.#description = description;
@@ -27,6 +27,17 @@ export default class Project {
     this.#storageId = storageId;
   }
 
+  static get #projectTicker() {
+    let x = parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0));
+    x++;
+    localStorage.setItem("projectTicker", JSON.stringify(x));
+    return x.toString();
+  }
+
+  static #initializeLocalStorage() {
+    localStorage.setItem("projectIdArray", "[]");
+  }
+
   static saveToLocalStorage(Project) {
     let data = {
       title: Project.#title,
@@ -35,21 +46,28 @@ export default class Project {
       priority: Project.#priority,
       completed: Project.#completed,
       todoArr: Project.#todoArr,
+      storageId: Project.#storageId,
     };
-    localStorage.setItem(Project.#storageId, JSON.stringify(data));
 
+    //check if array of keys are being stored in projectIdArray and initiate them if not
     if (localStorage.getItem("projectIdArray") == null) {
-      localStorage.setItem("projectIdArray", "[]");
+      /*       Project.#initializeLocalStorage();
+       */ localStorage.setItem("projectIdArray", "[]");
     }
 
+    //retrieve projectIdArray
     let projectIdArray = Array.from(
       JSON.parse(localStorage.getItem("projectIdArray"))
     );
 
+    // check if this project already exists in storage.  If not add it to projectIdArray
     if (!projectIdArray.includes(Project.#storageId)) {
       projectIdArray.push(Project.#storageId);
       localStorage.setItem("projectIdArray", JSON.stringify(projectIdArray));
     }
+
+    // write the project data to storage
+    localStorage.setItem(Project.#storageId, JSON.stringify(data));
   }
 
   static retrieveSingleFromLocalStorage(storageId) {
@@ -78,8 +96,7 @@ export default class Project {
     }
     let projects = [];
     projectIdArray.forEach((storageId) => {
-      let storedInfo = JSON.parse(localStorage.getItem(storageId));
-      projects.push(new Project(storedInfo));
+      projects.push(new Project(JSON.parse(localStorage.getItem(storageId))));
     });
     return projects;
   }
@@ -109,6 +126,7 @@ export default class Project {
   }
 
   set dueDate(newDueDate) {
+    newDueDate = format(newDueDate, "dd-MMM-yyyy");
     this.#dueDate = newDueDate;
   }
 
@@ -133,9 +151,9 @@ export default class Project {
   }
 
   set todoArr(newTodoArr) {
-    /*     if (!(newTodoArr instanceof Array)) {
+    if (!(newTodoArr instanceof Array)) {
       throw "Variable not of type Array";
-    } */
+    }
     this.#todoArr = newTodoArr;
   }
 
