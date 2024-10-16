@@ -53,7 +53,7 @@ export default function DragDropList() {
 
     function pickUpGridItem(event) {
       
-      if (event.target.classList.contains("slider")) {
+      if (event.target.classList.contains("grid-item__Title")) {
         return;
       }
 
@@ -73,7 +73,7 @@ export default function DragDropList() {
         return;
       }
 
-      item.classList.add("moving");
+      
       item.style.zIndex = 1000;
       gridContainerTop = gridContainer.getBoundingClientRect().top;
       initialItemPosY = item.getBoundingClientRect().top;
@@ -91,7 +91,7 @@ export default function DragDropList() {
       if (event.buttons !== 1) {
         return;
       }
-
+      item.classList.add("moving");
       itemContainerPosY = event.clientY - pointerOffset - gridContainerTop;
 
       if (itemAbove) {

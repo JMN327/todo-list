@@ -1,7 +1,7 @@
 .grid-container {
     display: grid; 
     grid-template-columns: 1fr;
-    gap: 0.5rem;
+    gap: 2px;
     /* padding: 0px 15px; */
 
   }
@@ -9,9 +9,22 @@
   .grid-item {
     user-select: none;
     position: relative;
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
   }
   
   .moving {
-    box-shadow: 0px 2px 6px -2px rgba(0, 0, 0, 0.9);
-    border-radius: .75rem;
+
+    box-shadow: 0px 0px 4px -2px rgba(0, 0, 0, 0.9);
+    /* border-radius: .75rem; */
+    .grid-item__border {
+      position: absolute;
+      top: 0.25rem;
+      left: 0.25rem;
+      right: 0.25rem;
+      bottom: 0.25rem;
+      border: .125rem solid rgb(160, 160, 160);
+      border-radius: var(--border-radius-small);
+    }
   }

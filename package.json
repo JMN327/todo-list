@@ -28,6 +28,7 @@
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
-    "date-fns": "^4.1.0"
+    "date-fns": "^4.1.0",
+    "number-to-text": "^0.3.9"
   }
 }

@@ -1,5 +1,7 @@
 import { format } from "date-fns";
 import storageAvailable from "./localStorage.js";
+const numberToText = require('number-to-text')
+require('number-to-text/converters/en-us');
 
 export default class Project {
   #title;
@@ -9,7 +11,7 @@ export default class Project {
   #createdDate;
 
   constructor({
-    title = "",
+    title = numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
     description = "",
     todoArr = [],
     storageId = "P" + Project.#projectTicker,

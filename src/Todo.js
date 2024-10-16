@@ -1,5 +1,7 @@
 import { format } from "date-fns";
 import storageAvailable from "./localStorage.js";
+const numberToText = require('number-to-text')
+require('number-to-text/converters/en-us');
 
 export default class Todo {
   #title;
@@ -12,7 +14,7 @@ export default class Todo {
   #createdDate;
 
   constructor({
-    title = "",
+    title = numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0))+1),
     description = "",
     dueDate = null,
     priority = 0,
