@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import storageAvailable from "./localStorage.js";
 
 export default class Todo {
   #title;
@@ -8,6 +9,7 @@ export default class Todo {
   #completed;
   #project;
   #storageId;
+  #createdDate;
 
   constructor({
     title = "",
@@ -17,6 +19,7 @@ export default class Todo {
     completed = false,
     project = "default",
     storageId = "T" + Todo.#todoTicker,
+    createdDate = Date.now(),
   } = {}) {
     this.#title = title;
     this.#description = description;
@@ -25,7 +28,10 @@ export default class Todo {
     this.#completed = completed;
     this.#project = project;
     this.#storageId = storageId;
+    this.#createdDate = createdDate;
   }
+
+  
 
   static get #todoTicker() {
     let x = parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0));
@@ -43,7 +49,12 @@ export default class Todo {
       completed: Todo.#completed,
       project: Todo.#project,
       storageId: Todo.#storageId,
+      createdDate: Todo.#createdDate,
     };
+
+    if (!storageAvailable) {
+      return;
+    }
 
     //check if array of keys are being stored in todoIdArray and initiate them if not
     if (localStorage.getItem("todoIdArray") == null) {
@@ -66,6 +77,11 @@ export default class Todo {
   }
 
   static retrieveSingleFromLocalStorage(storageId) {
+
+    if (!storageAvailable) {
+      return;
+    }
+
     let todoIdArray = [];
     if (localStorage.getItem("todoIdArray") == null) {
       throw "No Todos saved in Local Storage index";
@@ -79,6 +95,11 @@ export default class Todo {
   }
 
   static retrieveAllFromLocalStorage() {
+
+    if (!storageAvailable) {
+      return;
+    }
+    
     let todoIdArray = [];
     if (localStorage.getItem("todoIdArray") == null) {
       throw "No Todos saved in Local Storage index";
@@ -151,5 +172,9 @@ export default class Todo {
 
   get storageId() {
     return this.#storageId;
+  }
+
+  get createdDate() {
+    return format(this.#createdDate, "dd-MMM-yy hh:mm:ss");
   }
 }

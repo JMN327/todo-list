@@ -1,30 +1,25 @@
 import { format } from "date-fns";
+import storageAvailable from "./localStorage.js";
 
 export default class Project {
   #title;
   #description;
-  #dueDate;
-  #priority;
-  #completed;
   #todoArr;
   #storageId;
+  #createdDate;
 
   constructor({
     title = "",
     description = "",
-    dueDate = null,
-    priority = 0,
-    completed = false,
     todoArr = [],
     storageId = "P" + Project.#projectTicker,
+    createdDate = Date.now(),
   } = {}) {
     this.#title = title;
     this.#description = description;
-    this.#dueDate = dueDate;
-    this.#priority = priority;
-    this.#completed = completed;
     this.#todoArr = todoArr;
     this.#storageId = storageId;
+    this.#createdDate = createdDate;
   }
 
   static get #projectTicker() {
@@ -39,14 +34,17 @@ export default class Project {
   }
 
   static saveToLocalStorage(Project) {
+
+    if (!storageAvailable) {
+      return;
+    }
+
     let data = {
       title: Project.#title,
       description: Project.#description,
-      dueDate: format(Project.#dueDate, "dd-MMM-yyyy"),
-      priority: Project.#priority,
-      completed: Project.#completed,
       todoArr: Project.#todoArr,
       storageId: Project.#storageId,
+      createdDate: Project.#createdDate,
     };
 
     //check if array of keys are being stored in projectIdArray and initiate them if not
@@ -71,6 +69,11 @@ export default class Project {
   }
 
   static retrieveSingleFromLocalStorage(storageId) {
+
+    if (!storageAvailable) {
+      return;
+    }
+
     let projectIdArray = [];
     if (localStorage.getItem("projectIdArray") == null) {
       throw "No Projects saved in Local Storage index";
@@ -86,6 +89,11 @@ export default class Project {
   }
 
   static retrieveAllFromLocalStorage() {
+
+    if (!storageAvailable) {
+      return;
+    }
+    
     let projectIdArray = [];
     if (localStorage.getItem("projectIdArray") == null) {
       throw "No Projects saved in Local Storage index";
@@ -125,31 +133,6 @@ export default class Project {
     return this.#description;
   }
 
-  set dueDate(newDueDate) {
-    newDueDate = format(newDueDate, "dd-MMM-yyyy");
-    this.#dueDate = newDueDate;
-  }
-
-  get dueDate() {
-    return this.#dueDate;
-  }
-
-  set priority(newPriority) {
-    this.#priority = newPriority;
-  }
-
-  get priority() {
-    return this.#priority;
-  }
-
-  set completed(newCompleted) {
-    this.#completed = newCompleted;
-  }
-
-  get completed() {
-    return this.#completed;
-  }
-
   set todoArr(newTodoArr) {
     if (!(newTodoArr instanceof Array)) {
       throw "Variable not of type Array";
@@ -163,5 +146,9 @@ export default class Project {
 
   get storageId() {
     return this.#storageId;
+  }
+
+  get createdDate() {
+    return format(this.#createdDate, "dd-MMM-yy hh:mm:ss");
   }
 }
