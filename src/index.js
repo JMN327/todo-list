@@ -27,5 +27,4 @@ allTodos.forEach((x) => {
 }); */
 
 displayProjectList();
-displayProjectDetail()
 

@@ -2,7 +2,6 @@ export default function DragDropList() {
   console.log("DragDropList Initiated");
   const gridContainerList = document.querySelectorAll(".grid-container");
   const gridContainerArray = [...gridContainerList];
-  
 
   gridContainerArray.forEach((gridContainer) => {
     makeDragNDrop(gridContainer);
@@ -32,6 +31,10 @@ export default function DragDropList() {
     let animating = false;
 
     let sticky = false;
+
+    gridContainer.addEventListener("dragstart", (event) => {
+      event.preventDefault();
+    });
 
     gridContainer.addEventListener("mousedown", (event) =>
       pickUpGridItem(event)
@@ -80,7 +83,7 @@ export default function DragDropList() {
         return;
       }
 
-/*       let parent = item.parentNode;
+      /*       let parent = item.parentNode;
       for (const child of parent.children) {
         child.children[0].classList.remove("selected");
       }
@@ -97,6 +100,7 @@ export default function DragDropList() {
     }
 
     function moveGridItem(event) {
+      event.preventDefault();
       if (!item) {
         return;
       }
@@ -116,7 +120,6 @@ export default function DragDropList() {
           let itemHeightSnapshot = itemAbove.offsetHeight;
           switchOffset += gap + itemHeightSnapshot;
           item.parentNode.insertBefore(item, itemAbove);
-          console.log(itemAbove.textContent);
           getImmediateSiblings(item);
 
           animateSnap(itemBelow, -itemHeightSnapshot, 0, 150);
@@ -179,7 +182,7 @@ export default function DragDropList() {
         switchOffset = 0;
         animating = false;
       };
-      return gridContainer.dispatchEvent(dragDropEvent)
+      return gridContainer.dispatchEvent(dragDropEvent);
     }
 
     function getImmediateSiblings(currentItem) {
