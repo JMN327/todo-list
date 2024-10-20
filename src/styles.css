@@ -1,4 +1,11 @@
 * {
+  overflow-anchor: none;
+/*   scroll-snap-stop: normal !important;
+  overscroll-behavior: unset !important;
+  scroll-behavior: unset !important; */
+}
+
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -29,7 +36,7 @@ body {
 
 .bar {
   border-radius: var(--border-radius-small);
-  /* background-color: rgb(245, 245, 245); */
+  background-color: lightgrey;
 
   display: grid;
   padding: 0.75rem;
@@ -40,7 +47,7 @@ body {
   background-color: white;
 }
 .projects {
-  grid-template-rows: 200px 400px 1fr;
+  grid-template-rows: 2fr 35.5rem 1fr;
 }
 .project-todos {
   grid-template-rows: 2fr 8fr 1fr;
@@ -64,7 +71,7 @@ body {
   width: 0.75rem;
 }
 .projects__project-list::-webkit-scrollbar-track {
-  background: rgb(235, 235, 235);
+  background: rgb(230, 230, 230);
   border-radius: var(--border-radius-small);
 
   border-left: 0.175rem solid transparent;
@@ -83,7 +90,7 @@ body {
 }
 
 .grid-item__content {
-  padding: 0.75rem;
+  padding: 0.825rem;
   display: flex;
   align-items: center;
   height: 3.5rem;
@@ -92,19 +99,21 @@ body {
   position: relative;
 }
 
-.grid-item__content:focus-within {
+.grid-item__content.selected {
   .grid-item__border {
     position: absolute;
-    top: 0.25rem;
-    left: 0.25rem;
-    right: 0.25rem;
-    bottom: 0.25rem;
-    border: .125rem solid grey;
+    top: 0.375rem;
+    left: 0.375rem;
+    right: 0.375rem;
+    bottom: 0.375rem;
+    border: .125rem solid rgb(187, 187, 187);
     border-radius: var(--border-radius-small);
+    pointer-events: none
   }
 }
 
 .grid-item__Title {
   cursor: text;
-  padding-right: 2rem;
+  padding-right: 0.5rem;
+  white-space: nowrap;
 }

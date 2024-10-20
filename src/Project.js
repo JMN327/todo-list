@@ -31,10 +31,6 @@ export default class Project {
     return x.toString();
   }
 
-  static #initializeLocalStorage() {
-    localStorage.setItem("projectIdArray", "[]");
-  }
-
   static saveToLocalStorage(Project) {
 
     if (!storageAvailable) {
@@ -68,6 +64,10 @@ export default class Project {
 
     // write the project data to storage
     localStorage.setItem(Project.#storageId, JSON.stringify(data));
+  }
+
+  static updateProjectIdArray(newProjectIdArray) {
+    localStorage.setItem("projectIdArray", JSON.stringify(newProjectIdArray));
   }
 
   static retrieveSingleFromLocalStorage(storageId) {

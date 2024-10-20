@@ -1,8 +1,8 @@
 .grid-container {
     display: grid; 
     grid-template-columns: 1fr;
-    gap: 2px;
-    /* padding: 0px 15px; */
+    gap: .25rem;
+    padding: 0px;
 
   }
 
@@ -12,19 +12,11 @@
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
+    overflow-y: hidden;
   }
   
   .moving {
 
     box-shadow: 0px 0px 4px -2px rgba(0, 0, 0, 0.9);
     /* border-radius: .75rem; */
-    .grid-item__border {
-      position: absolute;
-      top: 0.25rem;
-      left: 0.25rem;
-      right: 0.25rem;
-      bottom: 0.25rem;
-      border: .125rem solid rgb(160, 160, 160);
-      border-radius: var(--border-radius-small);
-    }
   }

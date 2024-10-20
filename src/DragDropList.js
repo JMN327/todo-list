@@ -2,6 +2,7 @@ export default function DragDropList() {
   console.log("DragDropList Initiated");
   const gridContainerList = document.querySelectorAll(".grid-container");
   const gridContainerArray = [...gridContainerList];
+  
 
   gridContainerArray.forEach((gridContainer) => {
     makeDragNDrop(gridContainer);
@@ -10,17 +11,22 @@ export default function DragDropList() {
   function makeDragNDrop(gridContainer) {
     const gridContainerStyles = getComputedStyle(gridContainer);
     let gap = parseInt(gridContainerStyles.getPropertyValue("gap"));
-    let paddingTop = parseInt(gridContainerStyles.getPropertyValue("padding-top"));
+    let paddingTop = parseInt(
+      gridContainerStyles.getPropertyValue("padding-top")
+    );
+
+    const dragDropEvent = new Event("dragDrop");
 
     let item = null;
     let itemAbove = null;
-    let itemAboveY = null;
+    let itemAboveBottomY = null;
     let itemBelow = null;
-    let itemBelowY = null;
+    let itemBelowTopY = null;
     let gridContainerTop = null;
     let pointerOffset = null;
     let initialItemPosY = null;
-    let itemContainerPosY = null;
+    let itemContainerTopY = null;
+    let itemContainerBottomY = null;
     let itemLocalPosY = null;
     let switchOffset = 0;
     let animating = false;
@@ -35,7 +41,9 @@ export default function DragDropList() {
       releaseGridItem(event)
     );
 
-    gridContainer.addEventListener("contextmenu", (event) => {event.preventDefault()})
+    gridContainer.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+    });
 
     if (sticky) {
       gridContainer.addEventListener("mouseenter", (event) => {
@@ -52,7 +60,6 @@ export default function DragDropList() {
     }
 
     function pickUpGridItem(event) {
-      
       if (event.target.classList.contains("grid-item__Title")) {
         return;
       }
@@ -73,7 +80,15 @@ export default function DragDropList() {
         return;
       }
 
-      
+/*       let parent = item.parentNode;
+      for (const child of parent.children) {
+        child.children[0].classList.remove("selected");
+      }
+
+      if (item.hasChildNodes()) {
+        item.firstChild.classList.add("selected");
+      } */
+
       item.style.zIndex = 1000;
       gridContainerTop = gridContainer.getBoundingClientRect().top;
       initialItemPosY = item.getBoundingClientRect().top;
@@ -92,24 +107,28 @@ export default function DragDropList() {
         return;
       }
       item.classList.add("moving");
-      itemContainerPosY = event.clientY - pointerOffset - gridContainerTop;
+      itemContainerTopY = event.clientY - pointerOffset - gridContainerTop;
+      itemContainerBottomY = itemContainerTopY + item.offsetHeight;
 
+      //swap if higher than item above
       if (itemAbove) {
-        if (itemContainerPosY <= itemAboveY) {
+        if (itemContainerBottomY <= itemAboveBottomY) {
           let itemHeightSnapshot = itemAbove.offsetHeight;
           switchOffset += gap + itemHeightSnapshot;
           item.parentNode.insertBefore(item, itemAbove);
+          console.log(itemAbove.textContent);
           getImmediateSiblings(item);
 
           animateSnap(itemBelow, -itemHeightSnapshot, 0, 150);
         }
       }
 
+      //swap if lower than item below
       if (itemBelow) {
-        if (itemContainerPosY >= itemBelowY) {
+        if (itemContainerTopY >= itemBelowTopY) {
           let itemHeightSnapshot = itemBelow.offsetHeight;
           switchOffset -= gap + itemHeightSnapshot;
-          item.parentNode.insertBefore(itemBelow, item);
+          item.parentNode.insertBefore(item, itemBelow.nextElementSibling);
           getImmediateSiblings(item);
 
           animateSnap(itemAbove, itemHeightSnapshot, 0, 150);
@@ -119,20 +138,18 @@ export default function DragDropList() {
       itemLocalPosY =
         event.clientY - initialItemPosY + switchOffset - pointerOffset;
 
-      if (itemContainerPosY < 0) {
-        item.parentNode.prepend(item);
+      //set the actual position of the grid-item
+      if (itemContainerBottomY < item.offsetHeight) {
+        /* item.parentNode.prepend(item); */
         itemLocalPosY = -paddingTop;
-        item.style.top = itemLocalPosY + "px";
       } else if (
-        itemContainerPosY >
+        itemContainerTopY >
         gridContainer.offsetHeight - item.offsetHeight
       ) {
-        item.parentNode.append(item);
+        /* item.parentNode.append(item); */
         itemLocalPosY = paddingTop;
-        item.style.top = itemLocalPosY + "px";
-      } else {
-        item.style.top = itemLocalPosY + "px";
       }
+      item.style.top = itemLocalPosY + "px";
 
       getImmediateSiblings(item);
     }
@@ -151,27 +168,32 @@ export default function DragDropList() {
         item.classList.remove("moving");
         item = null;
         itemAbove = null;
-        itemAboveY = null;
+        itemAboveBottomY = null;
         itemBelow = null;
-        itemBelowY = null;
+        itemBelowTopY = null;
         gridContainerTop = null;
         pointerOffset = null;
         initialItemPosY = null;
-        itemContainerPosY = null;
+        itemContainerTopY = null;
         itemLocalPosY = null;
         switchOffset = 0;
         animating = false;
       };
+      return gridContainer.dispatchEvent(dragDropEvent)
     }
 
     function getImmediateSiblings(currentItem) {
       itemAbove = currentItem.previousElementSibling;
       itemBelow = currentItem.nextElementSibling;
       if (itemAbove) {
-        itemAboveY = itemAbove.getBoundingClientRect().top - gridContainerTop;
+        itemAboveBottomY =
+          itemAbove.getBoundingClientRect().top +
+          itemAbove.offsetHeight -
+          gridContainerTop;
       }
       if (itemBelow) {
-        itemBelowY = itemBelow.getBoundingClientRect().top - gridContainerTop;
+        itemBelowTopY =
+          itemBelow.getBoundingClientRect().top - gridContainerTop;
       }
     }
 
