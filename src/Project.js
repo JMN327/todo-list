@@ -11,8 +11,8 @@ export default class Project {
   #createdDate;
 
   constructor({
-    title = numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
-    description = "",
+    title = "type project Title here...",//numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
+    description = "type project description here...",
     todoArr = [],
     storageId = "P" + Project.#projectTicker,
     createdDate = Date.now(),
@@ -98,7 +98,7 @@ export default class Project {
     
     let projectIdArray = [];
     if (localStorage.getItem("projectIdArray") == null) {
-      throw "No Projects saved in Local Storage index";
+      return null;
     } else {
       projectIdArray = Array.from(
         JSON.parse(localStorage.getItem("projectIdArray"))
