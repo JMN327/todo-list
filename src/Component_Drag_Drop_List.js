@@ -1,5 +1,5 @@
-export default function DragDropList() {
-  console.log("DragDropList Initiated");
+export default function Component_Drag_Drop_List() {
+  console.log("Component_Drag_Drop_List Initiated");
   const gridContainerList = document.querySelectorAll(".grid-container");
   const gridContainerArray = [...gridContainerList];
 

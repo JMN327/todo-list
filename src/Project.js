@@ -66,8 +66,8 @@ export default class Project {
     localStorage.setItem(Project.#storageId, JSON.stringify(data));
   }
 
-  static updateProjectIdArray(newProjectIdArray) {
-    localStorage.setItem("projectIdArray", JSON.stringify(newProjectIdArray));
+  static updateIdArray(newIdArray) {
+    localStorage.setItem("projectIdArray", JSON.stringify(newIdArray));
   }
 
   static retrieveSingleFromLocalStorage(storageId) {

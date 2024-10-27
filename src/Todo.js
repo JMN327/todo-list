@@ -78,6 +78,10 @@ export default class Todo {
     localStorage.setItem(Todo.#storageId, JSON.stringify(data));
   }
 
+  static updateIdArray(newIdArray) {
+    localStorage.setItem("todoIdArray", JSON.stringify(newIdArray));
+  }
+
   static retrieveSingleFromLocalStorage(storageId) {
 
     if (!storageAvailable) {
