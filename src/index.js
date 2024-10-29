@@ -3,13 +3,13 @@ import "./styles.css";
 import Todo from "./Todo.js";
 import Project from "./Project.js";
 import storageAvailable from "./localStorage.js";
-import { display } from "./UI_Display.js";
+import { displayProjectList2 } from "./UI_Display.js";
 import { displayProjectList, displayProjectDetail } from "./UI.js";
 
 console.log("Index.js initiated");
 console.log("Storage Available: " + storageAvailable("localStorage"));
 
-/* const newTodo1 = new Todo();
+/*  const newTodo1 = new Todo();
 Todo.saveToLocalStorage(newTodo1);
 const newTodo2 = new Todo();
 Todo.saveToLocalStorage(newTodo2);
@@ -25,7 +25,7 @@ allProjects.forEach((x) => {
 });
 allTodos.forEach((x) => {
   console.log(x.createdDate);
-}); */
+});  */
 
-/* displayProjectList(); */
-display();
+//displayProjectList();
+displayProjectList2();

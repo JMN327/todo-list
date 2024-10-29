@@ -1,5 +1,5 @@
-import Component_Drag_Drop_List from "./Component_Drag_Drop_List.js";
-import Component_Enter_Key_Saving from "./Component_Enter_Key_Saving.js";
+import { Add_Component_Drag_Drop_Container } from "./Component_Drag_Drop_List.js";
+import {Add_Component_Enter_Key_Prevent_default} from "./Component_Enter_Key_Prevent_Default.js";
 import Component_Max_Length_30 from "./Component_Max_length.js";
 import "./Drag_Drop_List.css";
 import Project from "./Project.js";
@@ -8,7 +8,6 @@ import Todo from "./Todo.js";
 export function displayProjectList() {
   //get the static divs
   const projectListDiv = document.querySelector(".projects__project-list");
-  const detailsTitleTextDiv = document.querySelector(".details__title-text");
   const projectTodosDetailsDiv = document.querySelector(
     ".project-todos__details"
   );
@@ -17,9 +16,10 @@ export function displayProjectList() {
   );
 
   //make grid-container for drag-drop and append
-  let gridContainerDiv = document.createElement("div");
-  gridContainerDiv.classList.add("grid-container");
-  projectListDiv.appendChild(gridContainerDiv);
+  let gridContainerDiv = document.querySelector(
+    ".project-list__grid-container"
+  );
+  Add_Component_Drag_Drop_Container(gridContainerDiv);
 
   //add listener for custom dragDrop event to update ID array in local storage - saves order of projects in the list
   gridContainerDiv.addEventListener("dragDrop", () => {
@@ -34,15 +34,7 @@ export function displayProjectList() {
 
   //get the projects from local storage ready to display
   const allProjects = Project.retrieveAllFromLocalStorage();
-  //make default project if no projects saved
-  if (allProjects == null) {
-    console.log("No projects in storage.  Creating default project");
-    let defaultProject = new Project();
-    defaultProject.title = "Default Project";
-    defaultProject.description = "This is the default project";
-    Project.saveToLocalStorage(defaultProject);
-    allProjects = Project.retrieveAllFromLocalStorage();
-  }
+
   // Loop through all projects in storage to create the project list and prescribe to event listeners
   allProjects.forEach((pj) => {
     //make dom elements, classes, attributes
@@ -98,7 +90,7 @@ export function displayProjectList() {
     });
 
     //ensure max length is not exceeded
-/*     gridItemTitleDiv.addEventListener("beforeinput", (event) => {
+    /*     gridItemTitleDiv.addEventListener("beforeinput", (event) => {
       let data = event.data ?? "";
       console.log(event.target.textContent.length + data.length);
       if (event.target.textContent.length + data.length > 30) {
@@ -163,19 +155,20 @@ export function displayProjectList() {
   });
 
   function updateProjectDetail(event) {
-    let x = event.target.closest(".grid-item__content");
-    if (!x) {
+    //let selection = event.target.closest(".grid-item__content");
+    let selection = document.querySelector(".grid-item__content.selected");
+    const detailsTitleTextDiv = document.querySelector(".details__title-text");
+    if (!selection) {
       return;
     }
-    x = x.dataset.storageId;
-    projectTodosDetailsDiv.dataset.storageId = x;
-    let selectedProject = Project.retrieveSingleFromLocalStorage(x);
+    selection = selection.dataset.storageId;
+    projectTodosDetailsDiv.dataset.storageId = selection;
+    let selectedProject = Project.retrieveSingleFromLocalStorage(selection);
     detailsTitleTextDiv.textContent = selectedProject.title;
 
     detailsDescriptionTextDiv.textContent = selectedProject.description;
   }
 
-  Component_Drag_Drop_List();
   Component_Enter_Key_Saving();
   Component_Max_Length_30();
 }
