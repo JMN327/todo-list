@@ -3,7 +3,7 @@ import "./styles.css";
 import Todo from "./Todo.js";
 import Project from "./Project.js";
 import storageAvailable from "./localStorage.js";
-
+import { display } from "./UI_Display.js";
 import { displayProjectList, displayProjectDetail } from "./UI.js";
 
 console.log("Index.js initiated");
@@ -27,5 +27,5 @@ allTodos.forEach((x) => {
   console.log(x.createdDate);
 }); */
 
-displayProjectList();
-
+/* displayProjectList(); */
+display();

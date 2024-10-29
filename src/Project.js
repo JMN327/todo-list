@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import storageAvailable from "./localStorage.js";
-const numberToText = require('number-to-text')
-require('number-to-text/converters/en-us');
+const numberToText = require("number-to-text");
+require("number-to-text/converters/en-us");
 
 export default class Project {
   #title;
@@ -11,7 +11,7 @@ export default class Project {
   #createdDate;
 
   constructor({
-    title = "type project Title here...",//numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
+    title = "type project Title here...", //numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
     description = "type project description here...",
     todoArr = [],
     storageId = "P" + Project.#projectTicker,
@@ -32,7 +32,6 @@ export default class Project {
   }
 
   static saveToLocalStorage(Project) {
-
     if (!storageAvailable) {
       return;
     }
@@ -71,19 +70,16 @@ export default class Project {
   }
 
   static retrieveSingleFromLocalStorage(storageId) {
-
     if (!storageAvailable) {
       return;
     }
 
     let projectIdArray = [];
-    if (localStorage.getItem("projectIdArray") == null) {
-      throw "No Projects saved in Local Storage index";
-    } else {
-      projectIdArray = Array.from(
-        JSON.parse(localStorage.getItem("projectIdArray"))
-      );
-    }
+    Project.#makeDefaultIfNull()
+    projectIdArray = Array.from(
+      JSON.parse(localStorage.getItem("projectIdArray"))
+    );
+
     if (projectIdArray.includes(storageId)) {
       let storedInfo = JSON.parse(localStorage.getItem(storageId));
       return new Project(storedInfo);
@@ -91,24 +87,30 @@ export default class Project {
   }
 
   static retrieveAllFromLocalStorage() {
-
     if (!storageAvailable) {
       return;
     }
-    
+
     let projectIdArray = [];
-    if (localStorage.getItem("projectIdArray") == null) {
-      return null;
-    } else {
-      projectIdArray = Array.from(
-        JSON.parse(localStorage.getItem("projectIdArray"))
-      );
-    }
+    Project.#makeDefaultIfNull()
+    projectIdArray = Array.from(
+      JSON.parse(localStorage.getItem("projectIdArray"))
+    );
+
     let projects = [];
     projectIdArray.forEach((storageId) => {
       projects.push(new Project(JSON.parse(localStorage.getItem(storageId))));
     });
     return projects;
+  }
+
+  static #makeDefaultIfNull(){
+    if (localStorage.getItem("projectIdArray") == null) {
+      let defaultProject = new Project();
+      defaultProject.title = "Default Project";
+      defaultProject.description = "This is the default project";
+      Project.saveToLocalStorage(defaultProject);
+    }
   }
 
   set title(newTitle) {

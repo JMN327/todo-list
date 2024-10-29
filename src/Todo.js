@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import storageAvailable from "./localStorage.js";
-const numberToText = require('number-to-text')
-require('number-to-text/converters/en-us');
+const numberToText = require("number-to-text");
+require("number-to-text/converters/en-us");
 
 export default class Todo {
   #title;
@@ -14,7 +14,9 @@ export default class Todo {
   #createdDate;
 
   constructor({
-    title = numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0))+1),
+    title = numberToText.convertToText(
+      parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0)) + 1
+    ),
     description = "",
     dueDate = null,
     priority = 0,
@@ -32,8 +34,6 @@ export default class Todo {
     this.#storageId = storageId;
     this.#createdDate = createdDate;
   }
-
-  
 
   static get #todoTicker() {
     let x = parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0));
@@ -83,17 +83,14 @@ export default class Todo {
   }
 
   static retrieveSingleFromLocalStorage(storageId) {
-
     if (!storageAvailable) {
       return;
     }
 
     let todoIdArray = [];
-    if (localStorage.getItem("todoIdArray") == null) {
-      throw "No Todos saved in Local Storage index";
-    } else {
-      todoIdArray = Array.from(JSON.parse(localStorage.getItem("todoIdArray")));
-    }
+    Todo.#makeDefaultIfNull();
+    todoIdArray = Array.from(JSON.parse(localStorage.getItem("todoIdArray")));
+
     if (todoIdArray.includes(storageId)) {
       let storedInfo = JSON.parse(localStorage.getItem(storageId));
       return new Todo(storedInfo);
@@ -101,22 +98,28 @@ export default class Todo {
   }
 
   static retrieveAllFromLocalStorage() {
-
     if (!storageAvailable) {
       return;
     }
-    
+
     let todoIdArray = [];
-    if (localStorage.getItem("todoIdArray") == null) {
-      throw "No Todos saved in Local Storage index";
-    } else {
-      todoIdArray = Array.from(JSON.parse(localStorage.getItem("todoIdArray")));
-    }
+    Todo.#makeDefaultIfNull();
+    todoIdArray = Array.from(JSON.parse(localStorage.getItem("todoIdArray")));
+
     let todos = [];
     todoIdArray.forEach((storageId) => {
       todos.push(new Todo(JSON.parse(localStorage.getItem(storageId))));
     });
     return todos;
+  }
+
+  static #makeDefaultIfNull() {
+    if (localStorage.getItem("todoIdArray") == null) {
+      let defaultTodo = new Todo();
+      defaultTodo.title = "Default Todo";
+      defaultTodo.description = "This is the default project";
+      Todo.saveToLocalStorage(defaultTodo);
+    }
   }
 
   set title(newTitle) {
