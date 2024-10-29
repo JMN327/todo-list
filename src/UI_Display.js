@@ -3,6 +3,7 @@ import {
   Add_Component_Drag_Drop_Item,
 } from "./Component_Drag_Drop_List.js";
 import { Add_Component_Enter_Key_Prevent_default } from "./Component_Enter_Key_Prevent_Default.js";
+import {Add_Component_Selectable} from "./Component_Selectable.js"
 import Component_Max_Length_30 from "./Component_Max_length.js";
 import "./Drag_Drop_List.css";
 import Project from "./Project.js";
@@ -30,38 +31,47 @@ export function displayProjectList2() {
 
   // Loop through all projects in storage to create the project list
   allProjects.forEach((pj) => {
-    //make dom elements, classes, attributes
-    let gridItemDiv = document.createElement("div");
-    Add_Component_Drag_Drop_Item(gridItemDiv);
+    //Make div and add drag drop item functionality
+    let listItemDiv = document.createElement("div");
+    Add_Component_Drag_Drop_Item(listItemDiv);
 
-    let gridItemContentDiv = document.createElement("div");
-    gridItemContentDiv.setAttribute("data-storage-id", pj.storageId);
-    gridItemContentDiv.classList.add("grid-item__content");
-    Add_Component_Enter_Key_Prevent_default(gridItemContentDiv);
-    gridItemContentDiv.addEventListener("preventEnterKey", () => {
+    //Add content div to list items
+    let listItemContentDiv = document.createElement("div");
+    listItemContentDiv.setAttribute("data-storage-id", pj.storageId);
+    listItemContentDiv.classList.add("grid-item__content");
+    
+    //give content div behavior
+    Add_Component_Enter_Key_Prevent_default(listItemContentDiv);
+    listItemContentDiv.addEventListener("preventEnterKey", () => {
       console.log("Prevent Enter Key event fired");
-      if (gridItemContentDiv.textContent === "") {
-        gridItemContentDiv.textContent = "Project Title";
+      if (listItemContentDiv.textContent === "") {
+        listItemContentDiv.textContent = "Project Title";
       }
-      pj.title = gridItemContentDiv.textContent;
+      pj.title = listItemContentDiv.textContent;
       Project.saveToLocalStorage(pj);
-      gridItemContentDiv.childNodes.forEach((child)=>{child.blur()});
+      listItemContentDiv.childNodes.forEach((child)=>{child.blur()});
     });
 
-    let gridItemBorderDiv = document.createElement("div");
-    gridItemBorderDiv.classList.add("grid-item__border");
+    Add_Component_Selectable(listItemContentDiv)
+    listItemContentDiv.addEventListener("selected", (event) => {
+      console.log("Selection event fired");
+      DisplayProjectDetail()
+    })
 
-    let gridItemTitleDiv = document.createElement("div");
-    gridItemTitleDiv.classList.add("grid-item__Title");
-    gridItemTitleDiv.classList.add("max-length-30");
-    gridItemTitleDiv.setAttribute("draggable", "false");
-    gridItemTitleDiv.setAttribute("contenteditable", "true");
-    gridItemTitleDiv.textContent = pj.title;
+    let listItemBorderDiv = document.createElement("div");
+    listItemBorderDiv.classList.add("grid-item__border");
 
-    gridContainerDiv.appendChild(gridItemDiv);
-    gridItemDiv.appendChild(gridItemContentDiv);
-    gridItemContentDiv.appendChild(gridItemBorderDiv);
-    gridItemContentDiv.appendChild(gridItemTitleDiv);
+    let listItemTitleDiv = document.createElement("div");
+    listItemTitleDiv.classList.add("grid-item__Title");
+    listItemTitleDiv.classList.add("max-length-30");
+    listItemTitleDiv.setAttribute("draggable", "false");
+    listItemTitleDiv.setAttribute("contenteditable", "true");
+    listItemTitleDiv.textContent = pj.title;
+
+    gridContainerDiv.appendChild(listItemDiv);
+    listItemDiv.appendChild(listItemContentDiv);
+    listItemContentDiv.appendChild(listItemBorderDiv);
+    listItemContentDiv.appendChild(listItemTitleDiv);
 
     //COMPONENT add "selected" CSS class to any list items clicked on
 
@@ -84,6 +94,9 @@ export function DisplayProjectDetail() {
   const detailsTitleTextDiv = document.querySelector(".details__title-text");
   const detailsDescriptionTextDiv = document.querySelector(
     ".details__description-text"
+  );
+  const projectTodosDetailsDiv = document.querySelector(
+    ".project-todos__details"
   );
   projectTodosDetailsDiv.dataset.storageId = selection;
   const selectedProject = Project.retrieveSingleFromLocalStorage(selection);
