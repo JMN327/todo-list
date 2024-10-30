@@ -2,9 +2,10 @@ import {
   Add_Component_Drag_Drop_Container,
   Add_Component_Drag_Drop_Item,
 } from "./Component_Drag_Drop_List.js";
-import { Add_Component_Enter_Key_Prevent_default } from "./Component_Enter_Key_Prevent_Default.js";
-import {Add_Component_Selectable} from "./Component_Selectable.js"
-import Component_Max_Length_30 from "./Component_Max_length.js";
+import { Add_Component_Update_Storage_triggers } from "./Component_Update_Storage_Triggers.js";
+import { Add_Component_Selectable } from "./Component_Selectable.js";
+import { Add_Component_Max_Length } from "./Component_Max_length.js";
+import { Add_Component_Double_Click_Cursor } from "./Component_Double_Click_Cursor.js";
 import "./Drag_Drop_List.css";
 import Project from "./Project.js";
 import Todo from "./Todo.js";
@@ -39,49 +40,50 @@ export function displayProjectList2() {
     let listItemContentDiv = document.createElement("div");
     listItemContentDiv.setAttribute("data-storage-id", pj.storageId);
     listItemContentDiv.classList.add("grid-item__content");
-    
+
     //give content div behavior
-    Add_Component_Enter_Key_Prevent_default(listItemContentDiv);
-    listItemContentDiv.addEventListener("preventEnterKey", () => {
-      console.log("Prevent Enter Key event fired");
+    Add_Component_Update_Storage_triggers(listItemContentDiv);
+    listItemContentDiv.addEventListener("updateNeeded", () => {
+      console.log("Update storage trigger fired");
       if (listItemContentDiv.textContent === "") {
         listItemContentDiv.textContent = "Project Title";
       }
       pj.title = listItemContentDiv.textContent;
       Project.saveToLocalStorage(pj);
-      listItemContentDiv.childNodes.forEach((child)=>{child.blur()});
+      listItemContentDiv.childNodes.forEach((child) => {
+        child.blur();
+      });
+      DisplayProjectDetail();
     });
 
-    Add_Component_Selectable(listItemContentDiv)
+    Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       console.log("Selection event fired");
-      DisplayProjectDetail()
-    })
+      DisplayProjectDetail();
+    });
+
+    Add_Component_Double_Click_Cursor(listItemContentDiv);
+    listItemContentDiv.addEventListener("doubleClickCursor", (event) => {
+      console.log("doubleClickCursor event fired");
+    });
 
     let listItemBorderDiv = document.createElement("div");
     listItemBorderDiv.classList.add("grid-item__border");
 
     let listItemTitleDiv = document.createElement("div");
     listItemTitleDiv.classList.add("grid-item__Title");
-    listItemTitleDiv.classList.add("max-length-30");
     listItemTitleDiv.setAttribute("draggable", "false");
     listItemTitleDiv.setAttribute("contenteditable", "true");
     listItemTitleDiv.textContent = pj.title;
+    Add_Component_Max_Length(listItemTitleDiv, 30);
+    listItemTitleDiv.addEventListener("maxLengthReached", () => {
+      console.log("maxLengthReached event fired");
+    });
 
     gridContainerDiv.appendChild(listItemDiv);
     listItemDiv.appendChild(listItemContentDiv);
     listItemContentDiv.appendChild(listItemBorderDiv);
     listItemContentDiv.appendChild(listItemTitleDiv);
-
-    //COMPONENT add "selected" CSS class to any list items clicked on
-
-    //COMPONENT add double click functionality to put the cursor on the text for editing if empty space on list item is clicked
-
-    //COMPONENT  max length is not exceeded
-
-    //COMPONENT save project if enter key pressed when typing.  Also stop default enter key behavior
-
-    //COMPONENT save project if it loses focus
   });
 }
 
