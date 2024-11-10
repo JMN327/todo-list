@@ -11,6 +11,7 @@ import Project from "./Project.js";
 import Todo from "./Todo.js";
 
 export function displayProjectList2() {
+  console.log("displaying Project List");
   //Set up the Project list as a grid container
   let gridContainerDiv = document.querySelector(
     ".project-list__grid-container"
@@ -44,16 +45,16 @@ export function displayProjectList2() {
     //give content div behavior
     Add_Component_Update_Storage_triggers(listItemContentDiv);
     listItemContentDiv.addEventListener("updateNeeded", () => {
-      console.log("Update storage trigger fired");
+      console.log("Update storage trigger fired 1");
       if (listItemContentDiv.textContent === "") {
         listItemContentDiv.textContent = "Project Title";
       }
       pj.title = listItemContentDiv.textContent;
       Project.saveToLocalStorage(pj);
-      listItemContentDiv.childNodes.forEach((child) => {
+      /*       listItemContentDiv.childNodes.forEach((child) => {
         child.blur();
-      });
-      DisplayProjectDetail();
+      }); */
+      //DisplayProjectDetail();
     });
 
     Add_Component_Selectable(listItemContentDiv);
@@ -88,22 +89,70 @@ export function displayProjectList2() {
 }
 
 export function DisplayProjectDetail() {
-  let selection = document.querySelector(".grid-item__content.selected");
+  console.log("displaying Project Detail");
+  const selection = document.querySelector(".grid-item__content.selected");
   if (!selection) {
     return;
   }
-  selection = selection.dataset.storageId;
-  const detailsTitleTextDiv = document.querySelector(".details__title-text");
-  const detailsDescriptionTextDiv = document.querySelector(
-    ".details__description-text"
-  );
+  const selectionID = selection.dataset.storageId;
+
   const projectTodosDetailsDiv = document.querySelector(
     ".project-todos__details"
   );
-  projectTodosDetailsDiv.dataset.storageId = selection;
-  const selectedProject = Project.retrieveSingleFromLocalStorage(selection);
+  removeAllChildNodes(projectTodosDetailsDiv)
+  const detailsTitleDiv = document.createElement("div");
+  detailsTitleDiv.classList.add("details__title");
+  const detailsTitleBorderDiv = document.createElement("div");
+  detailsTitleBorderDiv.classList.add("details__title-border");
+  const detailsTitleTextDiv = document.createElement("div");
+  detailsTitleTextDiv.classList.add("details__title-text");
+  const detailsDescriptionDiv = document.createElement("div");
+  detailsDescriptionDiv.classList.add("details__description");
+  const detailsDescriptionBorderDiv = document.createElement("div");
+  detailsDescriptionBorderDiv.classList.add("details__description-border");
+  const detailsDescriptionTextDiv = document.createElement("div");
+  detailsDescriptionTextDiv.classList.add("details__description-text");
+  detailsDescriptionTextDiv.setAttribute("contenteditable", "true")
+
+  projectTodosDetailsDiv.appendChild(detailsTitleDiv);
+  projectTodosDetailsDiv.appendChild(detailsDescriptionDiv);
+  detailsTitleDiv.appendChild(detailsTitleBorderDiv);
+  detailsTitleDiv.appendChild(detailsTitleTextDiv);
+  detailsDescriptionDiv.appendChild(detailsDescriptionBorderDiv);
+  detailsDescriptionDiv.appendChild(detailsDescriptionTextDiv);
+
+  projectTodosDetailsDiv.dataset.storageId = selectionID;
+  const selectedProject = Project.retrieveSingleFromLocalStorage(selectionID);
 
   detailsTitleTextDiv.textContent = selectedProject.title;
 
   detailsDescriptionTextDiv.textContent = selectedProject.description;
+
+  //problems due to non-general component
+  /*   Add_Component_Double_Click_Cursor(detailsDescriptionTextDiv);
+  detailsDescriptionTextDiv.addEventListener("doubleClickCursor", (event) => {
+    console.log("doubleClickCursor event fired");
+  }); */
+
+  Add_Component_Max_Length(detailsDescriptionTextDiv, 120);
+  detailsDescriptionTextDiv.addEventListener("maxLengthReached", () => {
+    console.log("maxLengthReached event fired");
+  });
+
+  Add_Component_Update_Storage_triggers(detailsDescriptionDiv);
+  detailsDescriptionDiv.addEventListener("updateNeeded", () => {
+    console.log("Update storage trigger fired 2");
+    if (detailsDescriptionTextDiv.textContent === "") {
+      detailsDescriptionTextDiv.textContent =
+        "type project description here...";
+    }
+    selectedProject.description = detailsDescriptionTextDiv.textContent;
+    Project.saveToLocalStorage(selectedProject);
+  });
+}
+
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+  }
 }
