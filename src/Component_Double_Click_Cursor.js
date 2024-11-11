@@ -6,8 +6,8 @@ export function Add_Component_Double_Click_Cursor(div) {
     }
     //move the cursor to the end of the text
     let item = event.target
-      .closest(".grid-item")
-      .querySelector(".grid-item__Title");
+      .parentNode
+      .querySelector(".editable");
     let sel = document.getSelection();
     sel.selectAllChildren(item);
     sel.collapseToEnd();

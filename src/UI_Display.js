@@ -72,7 +72,7 @@ export function displayProjectList2() {
     listItemBorderDiv.classList.add("grid-item__border");
 
     let listItemTitleDiv = document.createElement("div");
-    listItemTitleDiv.classList.add("grid-item__Title");
+    listItemTitleDiv.classList.add("grid-item__Title", "editable");
     listItemTitleDiv.setAttribute("draggable", "false");
     listItemTitleDiv.setAttribute("contenteditable", "true");
     listItemTitleDiv.textContent = pj.title;
@@ -111,7 +111,7 @@ export function DisplayProjectDetail() {
   const detailsDescriptionBorderDiv = document.createElement("div");
   detailsDescriptionBorderDiv.classList.add("details__description-border");
   const detailsDescriptionTextDiv = document.createElement("div");
-  detailsDescriptionTextDiv.classList.add("details__description-text");
+  detailsDescriptionTextDiv.classList.add("details__description-text", "editable");
   detailsDescriptionTextDiv.setAttribute("contenteditable", "true")
 
   projectTodosDetailsDiv.appendChild(detailsTitleDiv);
@@ -128,11 +128,10 @@ export function DisplayProjectDetail() {
 
   detailsDescriptionTextDiv.textContent = selectedProject.description;
 
-  //problems due to non-general component
-  /*   Add_Component_Double_Click_Cursor(detailsDescriptionTextDiv);
-  detailsDescriptionTextDiv.addEventListener("doubleClickCursor", (event) => {
+  Add_Component_Double_Click_Cursor(detailsDescriptionDiv);
+  detailsDescriptionDiv.addEventListener("doubleClickCursor", (event) => {
     console.log("doubleClickCursor event fired");
-  }); */
+  });
 
   Add_Component_Max_Length(detailsDescriptionTextDiv, 120);
   detailsDescriptionTextDiv.addEventListener("maxLengthReached", () => {
