@@ -148,7 +148,89 @@ export function DisplayProjectDetail() {
     selectedProject.description = detailsDescriptionTextDiv.textContent;
     Project.saveToLocalStorage(selectedProject);
   });
+
+  displayTodoList(selectionID) 
+
 }
+
+export function displayTodoList(projectID) {
+  console.log("displaying Todo List");
+  //Set up the Todo list as a grid container
+  let gridContainerDiv = document.querySelector(
+    ".todo-list__grid-container"
+  );
+  removeAllChildNodes(gridContainerDiv)
+  Add_Component_Drag_Drop_Container(gridContainerDiv);
+  //Update the order of stored todos to reflect a drag/drop event
+  gridContainerDiv.addEventListener("dragDrop", () => {
+    console.log("dragDrop event fired");
+    let items = gridContainerDiv.querySelectorAll(".grid-item__content");
+    let idArray = [];
+    items.forEach((item) => {
+      idArray.push(item.dataset.storageId);
+    });
+    Todo.updateIdArray(idArray);
+  });
+
+  //get all todos from local storage ready to display
+  const allTodos = Todo.retrieveAllFromLocalStorage();
+
+  // Loop through all todos in storage to create the todo list
+  allTodos.forEach((td) => {
+    if (td.project != projectID) {
+      return
+    }
+    //Make div and add drag drop item functionality
+    let listItemDiv = document.createElement("div");
+    Add_Component_Drag_Drop_Item(listItemDiv);
+
+    //Add content div to list items
+    let listItemContentDiv = document.createElement("div");
+    listItemContentDiv.setAttribute("data-storage-id", td.storageId);
+    listItemContentDiv.classList.add("grid-item__content");
+
+    //give content div behavior
+    Add_Component_Update_Storage_triggers(listItemContentDiv);
+    listItemContentDiv.addEventListener("updateNeeded", () => {
+      console.log("Update storage trigger fired 3");
+      if (listItemContentDiv.textContent === "") {
+        listItemContentDiv.textContent = "Todo Title";
+      }
+      td.title = listItemContentDiv.textContent;
+      Todo.saveToLocalStorage(td);
+    });
+
+    Add_Component_Selectable(listItemContentDiv);
+    listItemContentDiv.addEventListener("selected", (event) => {
+      console.log("Selection event fired");
+      //DisplayProjectDetail();
+    });
+
+    Add_Component_Double_Click_Cursor(listItemContentDiv);
+    listItemContentDiv.addEventListener("doubleClickCursor", (event) => {
+      console.log("doubleClickCursor event fired");
+    });
+
+    let listItemBorderDiv = document.createElement("div");
+    listItemBorderDiv.classList.add("grid-item__border");
+
+    let listItemTitleDiv = document.createElement("div");
+    listItemTitleDiv.classList.add("grid-item__Title", "editable");
+    listItemTitleDiv.setAttribute("draggable", "false");
+    listItemTitleDiv.setAttribute("contenteditable", "true");
+    listItemTitleDiv.textContent = td.title;
+    Add_Component_Max_Length(listItemTitleDiv, 36);
+    listItemTitleDiv.addEventListener("maxLengthReached", () => {
+      console.log("maxLengthReached event fired");
+    });
+
+    gridContainerDiv.appendChild(listItemDiv);
+    listItemDiv.appendChild(listItemContentDiv);
+    listItemContentDiv.appendChild(listItemBorderDiv);
+    listItemContentDiv.appendChild(listItemTitleDiv);
+  });
+}
+
 
 function removeAllChildNodes(parent) {
   while (parent.firstChild) {

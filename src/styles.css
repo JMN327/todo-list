@@ -61,22 +61,22 @@ body {
 .todo {
   grid-template-rows: 1fr;
 } */
-.projects__project-list-wrapper {
+.projects__project-list-wrapper, .project-todos__todo-list-wrapper {
   padding: 1rem 0.5rem;
   background-color: rgb(247, 247, 247);
 }
-.projects__project-list {
+.projects__project-list, .project-todos__todo-list {
   height: 100%;
   overflow-y: scroll;
   padding: 1px 0.5rem;
   /* scrollbar-width: none;
   -ms-overflow-style: none;  */
 }
-.projects__project-list::-webkit-scrollbar {
+.projects__project-list::-webkit-scrollbar, .project-todos__todo-list::-webkit-scrollbar {
   /* WebKit */
   width: 0.75rem;
 }
-.projects__project-list::-webkit-scrollbar-track {
+.projects__project-list::-webkit-scrollbar-track, .project-todos__todo-list::-webkit-scrollbar-track {
   background: rgb(230, 230, 230);
   border-radius: var(--border-radius-small);
 
@@ -87,7 +87,7 @@ body {
 
   background-clip: padding-box;
 }
-.projects__project-list::-webkit-scrollbar-thumb {
+.projects__project-list::-webkit-scrollbar-thumb, .project-todos__todo-list::-webkit-scrollbar-thumb {
   background: lightgray;
   border-radius: var(--border-radius-small);
   cursor: grabbing;

@@ -21,7 +21,7 @@ export default class Todo {
     dueDate = null,
     priority = 0,
     completed = false,
-    project = "default",
+    project = "P1",
     storageId = "T" + Todo.#todoTicker,
     createdDate = Date.now(),
   } = {}) {
