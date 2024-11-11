@@ -99,7 +99,7 @@ export function DisplayProjectDetail() {
   const projectTodosDetailsDiv = document.querySelector(
     ".project-todos__details"
   );
-  removeAllChildNodes(projectTodosDetailsDiv)
+  removeAllChildNodes(projectTodosDetailsDiv);
   const detailsTitleDiv = document.createElement("div");
   detailsTitleDiv.classList.add("details__title");
   const detailsTitleBorderDiv = document.createElement("div");
@@ -111,8 +111,11 @@ export function DisplayProjectDetail() {
   const detailsDescriptionBorderDiv = document.createElement("div");
   detailsDescriptionBorderDiv.classList.add("details__description-border");
   const detailsDescriptionTextDiv = document.createElement("div");
-  detailsDescriptionTextDiv.classList.add("details__description-text", "editable");
-  detailsDescriptionTextDiv.setAttribute("contenteditable", "true")
+  detailsDescriptionTextDiv.classList.add(
+    "details__description-text",
+    "editable"
+  );
+  detailsDescriptionTextDiv.setAttribute("contenteditable", "true");
 
   projectTodosDetailsDiv.appendChild(detailsTitleDiv);
   projectTodosDetailsDiv.appendChild(detailsDescriptionDiv);
@@ -149,17 +152,19 @@ export function DisplayProjectDetail() {
     Project.saveToLocalStorage(selectedProject);
   });
 
-  displayTodoList(selectionID) 
-
+  displayTodoList(selectionID);
 }
 
 export function displayTodoList(projectID) {
   console.log("displaying Todo List");
+  //remove previous nodes in the list
+  const todoListDiv = document.querySelector(".project-todos__todo-list");
+  removeAllChildNodes(todoListDiv);
   //Set up the Todo list as a grid container
-  let gridContainerDiv = document.querySelector(
-    ".todo-list__grid-container"
-  );
-  removeAllChildNodes(gridContainerDiv)
+  const gridContainerDiv = document.createElement("div");
+  gridContainerDiv.classList.add("todo-list__grid-container");
+  todoListDiv.appendChild(gridContainerDiv);
+
   Add_Component_Drag_Drop_Container(gridContainerDiv);
   //Update the order of stored todos to reflect a drag/drop event
   gridContainerDiv.addEventListener("dragDrop", () => {
@@ -178,7 +183,7 @@ export function displayTodoList(projectID) {
   // Loop through all todos in storage to create the todo list
   allTodos.forEach((td) => {
     if (td.project != projectID) {
-      return
+      return;
     }
     //Make div and add drag drop item functionality
     let listItemDiv = document.createElement("div");
@@ -231,9 +236,8 @@ export function displayTodoList(projectID) {
   });
 }
 
-
 function removeAllChildNodes(parent) {
   while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
+    parent.removeChild(parent.firstChild);
   }
 }
