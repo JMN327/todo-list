@@ -1,7 +1,7 @@
 export function Add_Component_Double_Click_Cursor(div) {
   div.addEventListener("dblclick", (event) => {
     //exit if the title was clicked on as this double click is treated as normal text
-    if (event.target.classList.contains("grid-item__Title")) {
+    if (event.target.hasAttribute("contenteditable")) {
       return;
     }
     //move the cursor to the end of the text

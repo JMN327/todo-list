@@ -9,11 +9,14 @@ import { displayProjectList, displayProjectDetail } from "./UI.js";
 console.log("Index.js initiated");
 console.log("Storage Available: " + storageAvailable("localStorage"));
 
- const newTodo1 = new Todo();
+/*  const newTodo1 = new Todo();
+ newTodo1.project = "P8"
 Todo.saveToLocalStorage(newTodo1);
 const newTodo2 = new Todo();
-Todo.saveToLocalStorage(newTodo2);
-const allTodos = Todo.retrieveAllFromLocalStorage();
+newTodo2.project = "P8"
+Todo.saveToLocalStorage(newTodo2); */
+
+/* const allTodos = Todo.retrieveAllFromLocalStorage();
 const newProject1 = new Project();
 Project.saveToLocalStorage(newProject1);
 const newProject2 = new Project();
@@ -25,7 +28,7 @@ allProjects.forEach((x) => {
 });
 allTodos.forEach((x) => {
   console.log(x.createdDate);
-}); 
+});  */
 
 //displayProjectList();
 displayProjectList2();

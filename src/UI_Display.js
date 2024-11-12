@@ -51,16 +51,12 @@ export function displayProjectList2() {
       }
       pj.title = listItemContentDiv.textContent;
       Project.saveToLocalStorage(pj);
-      /*       listItemContentDiv.childNodes.forEach((child) => {
-        child.blur();
-      }); */
-      //DisplayProjectDetail();
     });
 
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       console.log("Selection event fired");
-      DisplayProjectDetail();
+      DisplayProjectDetail(pj.storageId);
     });
 
     Add_Component_Double_Click_Cursor(listItemContentDiv);
@@ -88,13 +84,8 @@ export function displayProjectList2() {
   });
 }
 
-export function DisplayProjectDetail() {
+export function DisplayProjectDetail(selectionID) {
   console.log("displaying Project Detail");
-  const selection = document.querySelector(".grid-item__content.selected");
-  if (!selection) {
-    return;
-  }
-  const selectionID = selection.dataset.storageId;
 
   const projectTodosDetailsDiv = document.querySelector(
     ".project-todos__details"
@@ -208,7 +199,7 @@ export function displayTodoList(projectID) {
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       console.log("Selection event fired");
-      //DisplayProjectDetail();
+      DisplayTodoDetail(td.storageId);
     });
 
     Add_Component_Double_Click_Cursor(listItemContentDiv);
@@ -240,4 +231,66 @@ function removeAllChildNodes(parent) {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
   }
+}
+
+
+export function DisplayTodoDetail(selectionID) {
+  console.log("displaying Todo Detail");
+
+  const todosDetailsDiv = document.querySelector(
+    ".todo__todo-details"
+  );
+  removeAllChildNodes(todosDetailsDiv);
+  const detailsTitleDiv = document.createElement("div");
+  detailsTitleDiv.classList.add("details__title");
+  const detailsTitleBorderDiv = document.createElement("div");
+  detailsTitleBorderDiv.classList.add("details__title-border");
+  const detailsTitleTextDiv = document.createElement("div");
+  detailsTitleTextDiv.classList.add("details__title-text");
+  const detailsDescriptionDiv = document.createElement("div");
+  detailsDescriptionDiv.classList.add("details__description");
+  const detailsDescriptionBorderDiv = document.createElement("div");
+  detailsDescriptionBorderDiv.classList.add("details__description-border");
+  const detailsDescriptionTextDiv = document.createElement("div");
+  detailsDescriptionTextDiv.classList.add(
+    "details__description-text",
+    "editable"
+  );
+  detailsDescriptionTextDiv.setAttribute("contenteditable", "true");
+
+  todosDetailsDiv.appendChild(detailsTitleDiv);
+  todosDetailsDiv.appendChild(detailsDescriptionDiv);
+  detailsTitleDiv.appendChild(detailsTitleBorderDiv);
+  detailsTitleDiv.appendChild(detailsTitleTextDiv);
+  detailsDescriptionDiv.appendChild(detailsDescriptionBorderDiv);
+  detailsDescriptionDiv.appendChild(detailsDescriptionTextDiv);
+
+  todosDetailsDiv.dataset.storageId = selectionID;
+  const selectedTodo = Todo.retrieveSingleFromLocalStorage(selectionID);
+
+  detailsTitleTextDiv.textContent = selectedTodo.title;
+
+  detailsDescriptionTextDiv.textContent = selectedTodo.description;
+
+  Add_Component_Double_Click_Cursor(detailsDescriptionDiv);
+  detailsDescriptionDiv.addEventListener("doubleClickCursor", (event) => {
+    console.log("doubleClickCursor event fired");
+  });
+
+  Add_Component_Max_Length(detailsDescriptionTextDiv, 120);
+  detailsDescriptionTextDiv.addEventListener("maxLengthReached", () => {
+    console.log("maxLengthReached event fired");
+  });
+
+  Add_Component_Update_Storage_triggers(detailsDescriptionDiv);
+  detailsDescriptionDiv.addEventListener("updateNeeded", () => {
+    console.log("Update storage trigger fired 2");
+    if (detailsDescriptionTextDiv.textContent === "") {
+      detailsDescriptionTextDiv.textContent =
+        "type project description here...";
+    }
+    selectedTodo.description = detailsDescriptionTextDiv.textContent;
+    Todo.saveToLocalStorage(selectedTodo);
+  });
+
 }

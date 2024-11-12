@@ -20,7 +20,7 @@ body {
 
 :root {
   font-family: "Montserrat", sans-serif;
-  --border-radius-small: 0.4rem;
+  --border-radius-small: 0.5rem;
 }
 
 [contenteditable="true"] {
@@ -112,15 +112,16 @@ body {
 .grid-item__content.selected {
   /* font-weight: 600; */
   color: hsl(0, 0%, 23%);
+  background-color: hsl(0, 0%, 74%);
   .grid-item__border {
     position: absolute;
-    --inset:0.4rem;
+    --inset:0.25rem;
     top: var(--inset);
     left: var(--inset);
     right: var(--inset);
     bottom: var(--inset);
-    border: 0.125rem solid hsl(0, 0%, 66%);
-    border-radius: var(--border-radius-small);
+    /* border: 0.125rem solid hsl(0, 0%, 66%); */
+    border-radius: calc(var(--border-radius-small)/1.5);
     background-color: hsl(0, 0%, 94%);
     pointer-events: none;
   }
@@ -151,18 +152,19 @@ body {
   align-items: center;
   height: 3.5rem;
   border-radius: var(--border-radius-small);
-  background-color: hsl(0, 0%, 83%);
+  background-color: hsl(0, 0%, 74%);
   position: relative;
   overflow-x: unset;
 
   .details__title-border {
     position: absolute;
-    top: 0.25rem;
-    left: 0.25rem;
-    right: 0.25rem;
-    bottom: 0.25rem;
-    border: 0.125rem solid hsl(0, 0%, 66%);
-    border-radius: var(--border-radius-small);
+    --inset:0.25rem;
+    top: var(--inset);
+    left: var(--inset);
+    right: var(--inset);
+    bottom: var(--inset);
+    /* border: 0.125rem solid hsl(0, 0%, 66%); */
+    border-radius: calc(var(--border-radius-small)/1.5);
     background-color: hsl(0, 0%, 94%);
     pointer-events: none;
   }
@@ -188,6 +190,11 @@ body {
   position: relative;
   overflow-x: unset;
   min-height: 1rem;
+
+  ::selection {
+    color: rgb(255, 255, 255);
+    background: hsl(0, 0%, 50%);
+  }
 
   /*   .details__description-border {
     position: absolute;
