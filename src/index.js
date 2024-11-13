@@ -9,26 +9,23 @@ import { displayProjectList, displayProjectDetail } from "./UI.js";
 console.log("Index.js initiated");
 console.log("Storage Available: " + storageAvailable("localStorage"));
 
-/*  const newTodo1 = new Todo();
- newTodo1.project = "P8"
-Todo.saveToLocalStorage(newTodo1);
-const newTodo2 = new Todo();
-newTodo2.project = "P8"
-Todo.saveToLocalStorage(newTodo2); */
 
-/* const allTodos = Todo.retrieveAllFromLocalStorage();
-const newProject1 = new Project();
+/* const newProject1 = new Project();
 Project.saveToLocalStorage(newProject1);
 const newProject2 = new Project();
 Project.saveToLocalStorage(newProject2);
-const allProjects = Project.retrieveAllFromLocalStorage();
-console.log(allTodos.length, allProjects.length);
-allProjects.forEach((x) => {
-  console.log(x.createdDate);
-});
-allTodos.forEach((x) => {
-  console.log(x.createdDate);
-});  */
+
+const newTodo1 = new Todo();
+newTodo1.project = "P2";
+Todo.saveToLocalStorage(newTodo1);
+const newTodo2 = new Todo();
+newTodo2.project = "P2";
+Todo.saveToLocalStorage(newTodo2); */
+
+
+
 
 //displayProjectList();
 displayProjectList2();
+
+//const pj = Project.retrieveSingleFromLocalStorage("P1")

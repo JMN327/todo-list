@@ -67,7 +67,7 @@ body {
   background-color: rgb(247, 247, 247);
 }
 .projects__project-list, .project-todos__todo-list {
-  height: 45rem; /*multiple of 3.75*/
+  max-height: 45rem; /*multiple of 3.75*/
   overflow-y: scroll;
   padding: 1px 0.5rem 1px 0;
   /* scrollbar-width: none;

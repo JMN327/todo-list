@@ -1,3 +1,4 @@
+import Todo from "./Todo.js";
 import { format } from "date-fns";
 import storageAvailable from "./localStorage.js";
 const numberToText = require("number-to-text");
@@ -69,13 +70,22 @@ export default class Project {
     localStorage.setItem("projectIdArray", JSON.stringify(newIdArray));
   }
 
+  static retrieveTodos(projectId) {
+    const todoIds = JSON.parse(localStorage.getItem(projectId)).todoArr;
+    let todos = [];
+    todoIds.forEach((id) => {
+      todos.push(Todo.retrieveSingleFromLocalStorage(id))
+    });
+    return todos;
+  }
+
   static retrieveSingleFromLocalStorage(storageId) {
     if (!storageAvailable) {
       return;
     }
 
     let projectIdArray = [];
-    Project.#makeDefaultIfNull()
+    Project.#makeDefaultIfNull();
     projectIdArray = Array.from(
       JSON.parse(localStorage.getItem("projectIdArray"))
     );
@@ -92,7 +102,7 @@ export default class Project {
     }
 
     let projectIdArray = [];
-    Project.#makeDefaultIfNull()
+    Project.#makeDefaultIfNull();
     projectIdArray = Array.from(
       JSON.parse(localStorage.getItem("projectIdArray"))
     );
@@ -104,7 +114,7 @@ export default class Project {
     return projects;
   }
 
-  static #makeDefaultIfNull(){
+  static #makeDefaultIfNull() {
     if (localStorage.getItem("projectIdArray") == null) {
       let defaultProject = new Project();
       defaultProject.title = "Default Project";

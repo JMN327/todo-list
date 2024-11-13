@@ -1,3 +1,4 @@
+import Project from "./Project.js";
 import { format } from "date-fns";
 import storageAvailable from "./localStorage.js";
 const numberToText = require("number-to-text");
@@ -14,9 +15,7 @@ export default class Todo {
   #createdDate;
 
   constructor({
-    title = numberToText.convertToText(
-      parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0)) + 1
-    ),
+    title = "Type todo here...",//numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0)) + 1),
     description = "",
     dueDate = null,
     priority = 0,
@@ -117,7 +116,8 @@ export default class Todo {
     if (localStorage.getItem("todoIdArray") == null) {
       let defaultTodo = new Todo();
       defaultTodo.title = "Default Todo";
-      defaultTodo.description = "This is the default project";
+      defaultTodo.project = "P1"
+      defaultTodo.description = "This is the default todo";
       Todo.saveToLocalStorage(defaultTodo);
     }
   }
@@ -171,8 +171,20 @@ export default class Todo {
     return this.#completed;
   }
 
-  set project(newProject) {
-    this.#project = newProject;
+  set project(newProjectID) {
+    //remove the todo from previous project todoArr...
+    const oldProject = Project.retrieveSingleFromLocalStorage(this.#project)
+    oldProject.todoArr.filter(x => x !== this.#storageId)
+    Project.saveToLocalStorage(oldProject)
+    //add to new project todoArr
+    const newProject = Project.retrieveSingleFromLocalStorage(newProjectID)
+    if (newProject == undefined) {
+      throw new Error ("that project doesn't exist")
+    }
+    newProject.todoArr.push(this.#storageId)
+    Project.saveToLocalStorage(newProject)
+
+    this.#project = newProjectID;
   }
 
   get project() {

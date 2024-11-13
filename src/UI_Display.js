@@ -147,7 +147,7 @@ export function DisplayProjectDetail(selectionID) {
 }
 
 export function displayTodoList(projectID) {
-  console.log("displaying Todo List");
+  console.log("displaying Todo List " + projectID);
   //remove previous nodes in the list
   const todoListDiv = document.querySelector(".project-todos__todo-list");
   removeAllChildNodes(todoListDiv);
@@ -165,17 +165,17 @@ export function displayTodoList(projectID) {
     items.forEach((item) => {
       idArray.push(item.dataset.storageId);
     });
-    Todo.updateIdArray(idArray);
+    const currentProject = Project.retrieveSingleFromLocalStorage(projectID);
+    currentProject.todoArr = idArray;
+    Project.saveToLocalStorage(currentProject);
+    //Todo.updateIdArray(idArray);
   });
 
   //get all todos from local storage ready to display
-  const allTodos = Todo.retrieveAllFromLocalStorage();
+  const projectTodos = Project.retrieveTodos(projectID);
 
   // Loop through all todos in storage to create the todo list
-  allTodos.forEach((td) => {
-    if (td.project != projectID) {
-      return;
-    }
+  projectTodos.forEach((td) => {
     //Make div and add drag drop item functionality
     let listItemDiv = document.createElement("div");
     Add_Component_Drag_Drop_Item(listItemDiv);
@@ -233,13 +233,10 @@ function removeAllChildNodes(parent) {
   }
 }
 
-
 export function DisplayTodoDetail(selectionID) {
   console.log("displaying Todo Detail");
 
-  const todosDetailsDiv = document.querySelector(
-    ".todo__todo-details"
-  );
+  const todosDetailsDiv = document.querySelector(".todo__todo-details");
   removeAllChildNodes(todosDetailsDiv);
   const detailsTitleDiv = document.createElement("div");
   detailsTitleDiv.classList.add("details__title");
@@ -292,5 +289,4 @@ export function DisplayTodoDetail(selectionID) {
     selectedTodo.description = detailsDescriptionTextDiv.textContent;
     Todo.saveToLocalStorage(selectedTodo);
   });
-
 }
