@@ -10,12 +10,13 @@ import "./Drag_Drop_List.css";
 import Project from "./Project.js";
 import Todo from "./Todo.js";
 
-export function displayProjectList2() {
+export function displayProjectList() {
   console.log("displaying Project List");
   //Set up the Project list as a grid container
   let gridContainerDiv = document.querySelector(
     ".project-list__grid-container"
   );
+  removeAllChildNodes(gridContainerDiv);
   Add_Component_Drag_Drop_Container(gridContainerDiv);
   //Update the order of stored projects to reflect a drag/drop event
   gridContainerDiv.addEventListener("dragDrop", () => {
@@ -83,6 +84,8 @@ export function displayProjectList2() {
     listItemContentDiv.appendChild(listItemBorderDiv);
     listItemContentDiv.appendChild(listItemTitleDiv);
   });
+
+  displayAddProjectButton();
 }
 
 export function DisplayProjectDetail(selectionID) {
@@ -235,7 +238,7 @@ function removeAllChildNodes(parent) {
   }
 }
 
-export function DisplayTodoDetail(selectionID) {
+function DisplayTodoDetail(selectionID) {
   console.log("displaying Todo Detail");
 
   const todosDetailsDiv = document.querySelector(".todo__todo-details");
@@ -291,4 +294,21 @@ export function DisplayTodoDetail(selectionID) {
     selectedTodo.description = detailsDescriptionTextDiv.textContent;
     Todo.saveToLocalStorage(selectedTodo);
   });
+}
+
+function displayAddProjectButton() {
+  const newProjectDiv = document.querySelector(".projects__new-project");
+  removeAllChildNodes(newProjectDiv);
+  const btn = document.createElement("button");
+  btn.classList.add("new-project__button");
+  btn.textContent = "+";
+
+  btn.addEventListener("mouseup", (event) => {
+    console.log("add Project btn clicked");
+    const pj = new Project({ title: "" });
+    Project.saveToLocalStorage(pj);
+    displayProjectList();
+  });
+
+  newProjectDiv.appendChild(btn);
 }

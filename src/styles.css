@@ -96,6 +96,28 @@ body {
   cursor: -webkit-grabbing;
 }
 
+.projects__new-project {
+  padding: 1rem ;
+  padding-top: 0;
+  background-color: rgb(247, 247, 247);
+  display: flex;
+  justify-content: end;
+
+  .new-project__button {
+    border-radius: var(--border-radius-small);
+    border:none;
+    outline: none;
+    width: 2rem;
+    aspect-ratio: 1/1;
+    font-weight: 600;
+    color: hsl(0, 0%, 35%);
+    font-size: 1.5rem;
+    background-color: hsl(0, 0%, 83%);
+  }
+}
+
+
+
 .grid-item__content {
   font-weight: 600;
   color: hsl(0, 0%, 35%);
