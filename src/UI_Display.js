@@ -51,6 +51,7 @@ export function displayProjectList2() {
       }
       pj.title = listItemContentDiv.textContent;
       Project.saveToLocalStorage(pj);
+      DisplayProjectDetail(pj.storageId);
     });
 
     Add_Component_Selectable(listItemContentDiv);
@@ -194,6 +195,7 @@ export function displayTodoList(projectID) {
       }
       td.title = listItemContentDiv.textContent;
       Todo.saveToLocalStorage(td);
+      DisplayTodoDetail(td.storageId);
     });
 
     Add_Component_Selectable(listItemContentDiv);
