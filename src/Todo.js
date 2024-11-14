@@ -41,7 +41,7 @@ export default class Todo {
     return x.toString();
   }
 
-  static saveToLocalStorage(Todo) {
+  static saveToLocalStorage(Todo, projectID) {
     let data = {
       title: Todo.#title,
       description: Todo.#description,
@@ -75,6 +75,9 @@ export default class Todo {
 
     // write the todo data to storage
     localStorage.setItem(Todo.#storageId, JSON.stringify(data));
+
+    Project.addTodo(projectID, Todo.#storageId)
+
   }
 
   static updateIdArray(newIdArray) {

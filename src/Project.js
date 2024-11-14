@@ -123,6 +123,16 @@ export default class Project {
     }
   }
 
+  static addTodo(projectId, todoID) {
+    const pj = Project.retrieveSingleFromLocalStorage(projectId)
+    console.log(projectId, pj)
+    if (!pj.todoArr.includes(todoID)) {
+      pj.todoArr.push(todoID)
+      Project.saveToLocalStorage(pj)
+    }
+
+  }
+
   set title(newTitle) {
     newTitle = newTitle.trim();
     if (newTitle === "") {
