@@ -47,10 +47,10 @@ export function displayProjectList() {
     Add_Component_Update_Storage_triggers(listItemContentDiv);
     listItemContentDiv.addEventListener("updateNeeded", () => {
       console.log("Update storage trigger fired 1");
-      if (listItemContentDiv.textContent === "") {
-        listItemContentDiv.textContent = "Project Title";
+      if (listItemTitleDiv.textContent === "") {
+        listItemTitleDiv.textContent = "Untitled";
       }
-      pj.title = listItemContentDiv.textContent;
+      pj.title = listItemTitleDiv.textContent;
       Project.saveToLocalStorage(pj);
       DisplayProjectDetail(pj.storageId);
     });
@@ -59,6 +59,8 @@ export function displayProjectList() {
     listItemContentDiv.addEventListener("selected", (event) => {
       console.log("Selection event fired");
       DisplayProjectDetail(pj.storageId);
+      const todosDetailsDiv = document.querySelector(".todo__todo-details");
+      removeAllChildNodes(todosDetailsDiv);
     });
 
     Add_Component_Double_Click_Cursor(listItemContentDiv);
@@ -193,10 +195,10 @@ export function displayTodoList(projectID) {
     Add_Component_Update_Storage_triggers(listItemContentDiv);
     listItemContentDiv.addEventListener("updateNeeded", () => {
       console.log("Update storage trigger fired 3");
-      if (listItemContentDiv.textContent === "") {
-        listItemContentDiv.textContent = "Todo Title";
+      if (listItemTitleDiv.textContent === "") {
+        listItemTitleDiv.textContent = "Untitled";
       }
-      td.title = listItemContentDiv.textContent;
+      td.title = listItemTitleDiv.textContent;
       Todo.saveToLocalStorage(td, projectID);
       DisplayTodoDetail(td.storageId, projectID);
     });
@@ -289,7 +291,7 @@ function DisplayTodoDetail(selectionID, projectID) {
 
   Add_Component_Update_Storage_triggers(detailsDescriptionDiv);
   detailsDescriptionDiv.addEventListener("updateNeeded", () => {
-    console.log("Update storage trigger fired 2");
+    console.log("Update storage trigger fired 4");
     if (detailsDescriptionTextDiv.textContent === "") {
       detailsDescriptionTextDiv.textContent =
         "type project description here...";
@@ -317,7 +319,8 @@ function displayAddProjectButton() {
       `[data-storage-id = ${pj.storageId}] `
     );
     const pjTitleDiv = pjContentDiv.querySelector(".grid-item__Title");
-    pjTitleDiv.focus();
+    const dblClick = new MouseEvent('dblclick');
+    pjTitleDiv.parentNode.dispatchEvent(dblClick)
   });
 
   newProjectDiv.appendChild(btn);
