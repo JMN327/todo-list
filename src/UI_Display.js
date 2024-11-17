@@ -13,10 +13,14 @@ import Todo from "./Todo.js";
 export function displayProjectList() {
   console.log("displaying Project List");
   //Set up the Project list as a grid container
-  let gridContainerDiv = document.querySelector(
-    ".project-list__grid-container"
-  );
-  removeAllChildNodes(gridContainerDiv);
+
+  let projectList = document.querySelector(".projects__project-list");
+  removeAllChildNodes(projectList);
+
+  let gridContainerDiv = document.createElement("div");
+  gridContainerDiv.classList.add("project-list__grid-container");
+  projectList.appendChild(gridContainerDiv);
+
   Add_Component_Drag_Drop_Container(gridContainerDiv);
   //Update the order of stored projects to reflect a drag/drop event
   gridContainerDiv.addEventListener("dragDrop", () => {
@@ -52,15 +56,16 @@ export function displayProjectList() {
       }
       pj.title = listItemTitleDiv.textContent;
       Project.saveToLocalStorage(pj);
-      DisplayProjectDetail(pj.storageId);
+      displayProjectDetail(pj.storageId);
     });
 
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       console.log("Selection event fired");
-      DisplayProjectDetail(pj.storageId);
+      displayProjectDetail(pj.storageId);
       const todosDetailsDiv = document.querySelector(".todo__todo-details");
       removeAllChildNodes(todosDetailsDiv);
+      displayDeleteProjectButton();
     });
 
     Add_Component_Double_Click_Cursor(listItemContentDiv);
@@ -90,13 +95,16 @@ export function displayProjectList() {
   displayAddProjectButton();
 }
 
-export function DisplayProjectDetail(selectionID) {
+export function displayProjectDetail(selectionID) {
   console.log("displaying Project Detail " + selectionID);
 
   const projectTodosDetailsDiv = document.querySelector(
     ".project-todos__details"
   );
   removeAllChildNodes(projectTodosDetailsDiv);
+  if (!selectionID) {
+    return;
+  }
   const detailsTitleDiv = document.createElement("div");
   detailsTitleDiv.classList.add("details__title");
   const detailsTitleBorderDiv = document.createElement("div");
@@ -142,8 +150,7 @@ export function DisplayProjectDetail(selectionID) {
   detailsDescriptionDiv.addEventListener("updateNeeded", () => {
     console.log("Update storage trigger fired 2");
     if (detailsDescriptionTextDiv.textContent === "") {
-      detailsDescriptionTextDiv.textContent =
-        "type project description here...";
+      detailsDescriptionTextDiv.textContent = "Add description here";
     }
     selectedProject.description = detailsDescriptionTextDiv.textContent;
     Project.saveToLocalStorage(selectedProject);
@@ -179,6 +186,10 @@ export function displayTodoList(projectID) {
 
   //get all todos from local storage ready to display
   const projectTodos = Project.retrieveTodos(projectID);
+  if (!projectTodos) {
+    displayAddTodoButton();
+    return;
+  }
 
   // Loop through all todos in storage to create the todo list
   projectTodos.forEach((td) => {
@@ -245,8 +256,11 @@ function removeAllChildNodes(parent) {
 function DisplayTodoDetail(selectionID, projectID) {
   console.log("displaying Todo Detail");
 
+  //initiate
   const todosDetailsDiv = document.querySelector(".todo__todo-details");
   removeAllChildNodes(todosDetailsDiv);
+
+  //title div
   const detailsTitleDiv = document.createElement("div");
   detailsTitleDiv.classList.add("details__title");
   detailsTitleDiv;
@@ -254,6 +268,8 @@ function DisplayTodoDetail(selectionID, projectID) {
   detailsTitleBorderDiv.classList.add("details__title-border");
   const detailsTitleTextDiv = document.createElement("div");
   detailsTitleTextDiv.classList.add("details__title-text");
+
+  //description div
   const detailsDescriptionDiv = document.createElement("div");
   detailsDescriptionDiv.classList.add("details__description");
   const detailsDescriptionBorderDiv = document.createElement("div");
@@ -265,6 +281,9 @@ function DisplayTodoDetail(selectionID, projectID) {
   );
   detailsDescriptionTextDiv.setAttribute("contenteditable", "true");
 
+  const dueDiv = document.createElement("div");
+
+  //adding to DOM
   todosDetailsDiv.appendChild(detailsTitleDiv);
   todosDetailsDiv.appendChild(detailsDescriptionDiv);
   detailsTitleDiv.appendChild(detailsTitleBorderDiv);
@@ -293,62 +312,111 @@ function DisplayTodoDetail(selectionID, projectID) {
   detailsDescriptionDiv.addEventListener("updateNeeded", () => {
     console.log("Update storage trigger fired 4");
     if (detailsDescriptionTextDiv.textContent === "") {
-      detailsDescriptionTextDiv.textContent =
-        "type project description here...";
+      detailsDescriptionTextDiv.textContent = "Add description here";
     }
     selectedTodo.description = detailsDescriptionTextDiv.textContent;
     Todo.saveToLocalStorage(selectedTodo, projectID);
   });
 }
 
+function displayDeleteProjectButton() {
+  const deleteProjectDiv = document.querySelector(".projects__delete-project");
+  removeAllChildNodes(deleteProjectDiv);
+  const btn = document.createElement("button");
+  btn.classList.add("toolbar__button");
+  btn.classList.add("tooltip");
+  btn.textContent = "×";
+
+  btn.addEventListener("mouseup", deleteProject);
+
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = "delete the currently selected project";
+
+  //btn.addEventListener("mouseup", );
+
+  btn.append(tooltipText);
+  deleteProjectDiv.appendChild(btn);
+}
+
 function displayAddProjectButton() {
   const newProjectDiv = document.querySelector(".projects__new-project");
   removeAllChildNodes(newProjectDiv);
   const btn = document.createElement("button");
-  btn.classList.add("new-project__button");
+  btn.classList.add("toolbar__button");
+  btn.classList.add("tooltip");
   btn.textContent = "+";
 
-  btn.addEventListener("mouseup", (event) => {
-    console.log("add Project btn clicked");
-    //create new project and update display
-    const pj = new Project({ title: "" });
-    Project.saveToLocalStorage(pj);
-    displayProjectList();
-    //focus on new Project
-    const pjContentDiv = document.querySelector(
-      `[data-storage-id = ${pj.storageId}] `
-    );
-    const pjTitleDiv = pjContentDiv.querySelector(".grid-item__Title");
-    const dblClick = new MouseEvent('dblclick');
-    pjTitleDiv.parentNode.dispatchEvent(dblClick)
-  });
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = "add a new project to the list";
 
+  btn.addEventListener("mouseup", addProject);
+
+  btn.append(tooltipText);
   newProjectDiv.appendChild(btn);
 }
 
 function displayAddTodoButton() {
   const newTodoDiv = document.querySelector(".project-todos__new-todo");
+  const pjId = document.querySelector(".project-todos__details").dataset
+    .storageId;
   removeAllChildNodes(newTodoDiv);
+  console.log("pjId " + pjId);
+  if (!pjId) {
+    return;
+  }
   const btn = document.createElement("button");
-  btn.classList.add("new-todo__button");
+  btn.classList.add("toolbar__button");
+  btn.classList.add("tooltip");
   btn.textContent = "+";
 
-  btn.addEventListener("mouseup", (event) => {
-    const pjId = document.querySelector(".project-todos__details").dataset
-      .storageId;
-    console.log("add Todo btn clicked");
-    //create new Todo and update display
-    const td = new Todo({ title: "", project: pjId });
-    Todo.saveToLocalStorage(td, pjId);
-    displayTodoList(pjId);
-    //focus on new Project
-    const tdContentDiv = document.querySelector(
-      `[data-storage-id = ${td.storageId}] `
-    );
-    console.log(tdContentDiv, td.storageId);
-    const tdTitleDiv = tdContentDiv.querySelector(".grid-item__Title");
-    tdTitleDiv.focus();
-  });
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = "add a new to do to the list";
 
+  btn.addEventListener("mouseup", AddTodo);
+
+  btn.append(tooltipText);
   newTodoDiv.appendChild(btn);
+}
+
+function addProject() {
+  //create new project and update display
+  const pj = new Project({ title: "" });
+  Project.saveToLocalStorage(pj);
+  displayProjectList();
+  //focus on new Project
+  const pjContentDiv = document.querySelector(
+    `[data-storage-id = ${pj.storageId}] `
+  );
+  const pjTitleDiv = pjContentDiv.querySelector(".grid-item__Title");
+  const dblClick = new MouseEvent("dblclick");
+  pjTitleDiv.parentNode.dispatchEvent(dblClick);
+}
+
+function AddTodo() {
+  const pjId = document.querySelector(".project-todos__details").dataset
+    .storageId;
+  //create new Todo and update display
+  const td = new Todo({ title: "", project: pjId });
+  Todo.saveToLocalStorage(td, pjId);
+  displayTodoList(pjId);
+  //focus on new Project
+  const tdContentDiv = document.querySelector(
+    `[data-storage-id = ${td.storageId}] `
+  );
+  const tdTitleDiv = tdContentDiv.querySelector(".grid-item__Title");
+  const dblClick = new MouseEvent("dblclick");
+  tdTitleDiv.parentNode.dispatchEvent(dblClick);
+}
+
+function deleteProject() {
+  const projectTodosDetailsDiv = document.querySelector(".project-todos__details");
+  const pjId = projectTodosDetailsDiv.dataset.storageId;
+  Project.deleteProjectInLocalStorage(pjId);
+  projectTodosDetailsDiv.removeAttribute("data-storage-id")
+  displayProjectList();
+  displayProjectDetail();
+  displayTodoList();
 }

@@ -12,8 +12,8 @@ export default class Project {
   #createdDate;
 
   constructor({
-    title = "type project Title here...", //numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
-    description = "type project description here...",
+    title = "Untitled", //numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
+    description = "Add description here",
     todoArr = [],
     storageId = "P" + Project.#projectTicker,
     createdDate = Date.now(),
@@ -71,10 +71,13 @@ export default class Project {
   }
 
   static retrieveTodos(projectId) {
+    if (!projectId) {
+      return;      
+    }
     const todoIds = JSON.parse(localStorage.getItem(projectId)).todoArr;
     let todos = [];
     todoIds.forEach((id) => {
-      todos.push(Todo.retrieveSingleFromLocalStorage(id))
+      todos.push(Todo.retrieveSingleFromLocalStorage(id));
     });
     return todos;
   }
@@ -114,6 +117,27 @@ export default class Project {
     return projects;
   }
 
+  static deleteProjectInLocalStorage(storageId) {
+    console.log("deleting " + storageId)
+    //get project array
+    const projectIdArray = Array.from(
+      JSON.parse(localStorage.getItem("projectIdArray"))
+    );
+    //check the storage ID given is in the array
+    if (!projectIdArray.includes(storageId)) {
+      return;
+    }
+    //remove all todos from that project
+    const pjTodoArray = Project.retrieveSingleFromLocalStorage(storageId).todoArr;
+    console.log("pj array for deleting " + pjTodoArray)
+    pjTodoArray.forEach((td) => Todo.deleteTodoInLocalStorage(td))
+
+    //remove the project
+    projectIdArray.splice(projectIdArray.indexOf(storageId), 1);
+    localStorage.removeItem(storageId);
+    localStorage.setItem("projectIdArray", JSON.stringify(projectIdArray));
+  }
+
   static #makeDefaultIfNull() {
     if (localStorage.getItem("projectIdArray") == null) {
       let defaultProject = new Project();
@@ -124,13 +148,11 @@ export default class Project {
   }
 
   static addTodo(projectId, todoID) {
-    const pj = Project.retrieveSingleFromLocalStorage(projectId)
-    console.log(projectId, pj)
+    const pj = Project.retrieveSingleFromLocalStorage(projectId);
     if (!pj.todoArr.includes(todoID)) {
-      pj.todoArr.push(todoID)
-      Project.saveToLocalStorage(pj)
+      pj.todoArr.push(todoID);
+      Project.saveToLocalStorage(pj);
     }
-
   }
 
   set title(newTitle) {

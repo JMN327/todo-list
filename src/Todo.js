@@ -15,8 +15,8 @@ export default class Todo {
   #createdDate;
 
   constructor({
-    title = "Type todo here...",//numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0)) + 1),
-    description = "",
+    title = "Untitled",//numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0)) + 1),
+    description = "Add description here",
     dueDate = null,
     priority = 0,
     completed = false,
@@ -109,6 +109,19 @@ export default class Todo {
       todos.push(new Todo(JSON.parse(localStorage.getItem(storageId))));
     });
     return todos;
+  }
+
+  static deleteTodoInLocalStorage(storageId) {
+    console.log("deleting " + storageId)
+    const todoIdArray = Array.from(
+      JSON.parse(localStorage.getItem("todoIdArray"))
+    );
+    if (!todoIdArray.includes(storageId)) {
+      return;
+    }
+    todoIdArray.splice(todoIdArray.indexOf(storageId), 1);
+    localStorage.removeItem(storageId);
+    localStorage.setItem("todoIdArray", JSON.stringify(todoIdArray));
   }
 
   static #makeDefaultIfNull() {

@@ -102,25 +102,55 @@ body {
   cursor: -webkit-grabbing;
 }
 
-.projects__new-project,
-.project-todos__new-todo {
+.projects__toolbar,
+.project-todo__toolbar {
   padding-top: 0;
   background-color: rgb(247, 247, 247);
   display: flex;
   justify-content: end;
+  gap: 0.25rem;
+}
+.toolbar__button {
+  border-radius: var(--border-radius-small);
+  border: none;
+  outline: none;
+  width: 2rem;
+  aspect-ratio: 1/1;
+  font-weight: 600;
+  color: hsl(0, 0%, 35%);
+  font-size: 1.5rem;
+  background-color: hsl(0, 0%, 83%);
+}
 
-  .new-project__button,
-  .new-todo__button {
-    border-radius: var(--border-radius-small);
-    border: none;
-    outline: none;
-    width: 2rem;
-    aspect-ratio: 1/1;
-    font-weight: 600;
-    color: hsl(0, 0%, 35%);
-    font-size: 1.5rem;
-    background-color: hsl(0, 0%, 83%);
-  }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+}
+
+.tooltip .tooltip-text {
+  color: hsl(0, 0%, 35%);
+  background-color: hsl(0, 0%, 70%);
+  font-size: 0.875rem;
+  visibility: hidden;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  border-radius: var(--border-radius-small);
+  white-space: nowrap;
+
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: calc((100% + 0.25rem) * -1);
+  left: calc(100% + 0.25rem);
+  transition-property: visibility;
+  transition-delay: 0s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  transition-delay: 0.5s;
 }
 
 .grid-item__content {
@@ -198,15 +228,14 @@ body {
     pointer-events: none;
   }
 
-  .details__title-text, .projects__header-title {
+  .details__title-text,
+  .projects__header-title {
     z-index: 1;
     font-size: 1.5rem;
     font-weight: 600;
     color: hsl(0, 0%, 23%);
   }
 }
-
-
 
 .details__description {
   font-weight: 600;
