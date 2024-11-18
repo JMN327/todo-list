@@ -138,6 +138,25 @@ export default class Project {
     localStorage.setItem("projectIdArray", JSON.stringify(projectIdArray));
   }
 
+  static removeTodoFromProjectsTodoArray(tdId, pjId) {
+    console.log(`removing ${tdId} from project ID array`)
+    //get project array
+    const projectTodoArray = Array.from(
+      JSON.parse(localStorage.getItem(pjId)).todoArr
+    );
+
+    //check the storage ID given is in the array
+    if (!projectTodoArray.includes(tdId)) {
+      return;
+    }
+    //remove  todos from the project Array
+    projectTodoArray.splice(projectTodoArray.indexOf(tdId), 1);
+    const pj = Project.retrieveSingleFromLocalStorage(pjId)
+    pj.todoArr = projectTodoArray
+    Project.saveToLocalStorage(pj)
+    console.log(`new Id array ${projectTodoArray}`);
+  }
+
   static #makeDefaultIfNull() {
     if (localStorage.getItem("projectIdArray") == null) {
       let defaultProject = new Project();

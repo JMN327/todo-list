@@ -193,13 +193,14 @@ export function displayTodoList(projectID) {
 
   // Loop through all todos in storage to create the todo list
   projectTodos.forEach((td) => {
+    const tdId = td.storageId;
     //Make div and add drag drop item functionality
     let listItemDiv = document.createElement("div");
     Add_Component_Drag_Drop_Item(listItemDiv);
 
     //Add content div to list items
     let listItemContentDiv = document.createElement("div");
-    listItemContentDiv.setAttribute("data-storage-id", td.storageId);
+    listItemContentDiv.setAttribute("data-storage-id", tdId);
     listItemContentDiv.classList.add("grid-item__content");
 
     //give content div behavior
@@ -211,13 +212,14 @@ export function displayTodoList(projectID) {
       }
       td.title = listItemTitleDiv.textContent;
       Todo.saveToLocalStorage(td, projectID);
-      DisplayTodoDetail(td.storageId, projectID);
+      DisplayTodoDetail(tdId, projectID);
     });
 
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       console.log("Selection event fired");
-      DisplayTodoDetail(td.storageId, projectID);
+      DisplayTodoDetail(tdId, projectID);
+      displayDeleteTodoButton(tdId)
     });
 
     Add_Component_Double_Click_Cursor(listItemContentDiv);
@@ -339,6 +341,29 @@ function displayDeleteProjectButton() {
   deleteProjectDiv.appendChild(btn);
 }
 
+function displayDeleteTodoButton(tdId) {
+  console.log("TdId for deleting: " + tdId)
+  const deleteTodoDiv = document.querySelector(".project-todo__delete-todo");
+  removeAllChildNodes(deleteTodoDiv);
+  const btn = document.createElement("button");
+  btn.classList.add("toolbar__button");
+  btn.classList.add("tooltip");
+  btn.setAttribute("data-storage-id", tdId);
+  
+  btn.textContent = "×";
+
+  btn.addEventListener("mouseup", deleteTodo);
+
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = "delete the currently selected to do";
+
+  //btn.addEventListener("mouseup", );
+
+  btn.append(tooltipText);
+  deleteTodoDiv.appendChild(btn);
+}
+
 function displayAddProjectButton() {
   const newProjectDiv = document.querySelector(".projects__new-project");
   removeAllChildNodes(newProjectDiv);
@@ -419,4 +444,13 @@ function deleteProject() {
   displayProjectList();
   displayProjectDetail();
   displayTodoList();
+}
+
+function deleteTodo(event) {
+  console.log(event.target)
+  const projectTodosDetailsDiv = document.querySelector(".project-todos__details");
+  const pjId = projectTodosDetailsDiv.dataset.storageId;
+  const tdId = event.target.dataset.storageId;
+  Todo.deleteTodoInLocalStorage(tdId, pjId);
+  //displayProjectDetail();
 }

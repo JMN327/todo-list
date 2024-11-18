@@ -111,17 +111,18 @@ export default class Todo {
     return todos;
   }
 
-  static deleteTodoInLocalStorage(storageId) {
-    console.log("deleting " + storageId)
+  static deleteTodoInLocalStorage(tdId, pjId) {
+    console.log("deleting " + tdId)
     const todoIdArray = Array.from(
       JSON.parse(localStorage.getItem("todoIdArray"))
     );
-    if (!todoIdArray.includes(storageId)) {
+    if (!todoIdArray.includes(tdId)) {
       return;
     }
-    todoIdArray.splice(todoIdArray.indexOf(storageId), 1);
-    localStorage.removeItem(storageId);
+    todoIdArray.splice(todoIdArray.indexOf(tdId), 1);
+    localStorage.removeItem(tdId);
     localStorage.setItem("todoIdArray", JSON.stringify(todoIdArray));
+    Project.removeTodoFromProjectsTodoArray(tdId, pjId)
   }
 
   static #makeDefaultIfNull() {
