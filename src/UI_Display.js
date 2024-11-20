@@ -9,6 +9,9 @@ import { Add_Component_Double_Click_Cursor } from "./Component_Double_Click_Curs
 import "./Drag_Drop_List.css";
 import Project from "./Project.js";
 import Todo from "./Todo.js";
+import datepicker from "js-datepicker";
+import "js-datepicker/dist/datepicker.min.css";
+import { format } from "date-fns";
 
 let selectedPjId;
 let selectedTdId;
@@ -67,7 +70,7 @@ export function displayProjectList() {
       console.log("project selection event fired");
       selectedPjId = pj.storageId;
       displayProjectDetail(pj.storageId);
-      const todosDetailsDiv = document.querySelector(".todo__todo-details");
+      const todosDetailsDiv = document.querySelector(".todo__header");
       removeAllChildNodes(todosDetailsDiv);
       displayDeleteProjectButton();
     });
@@ -265,8 +268,10 @@ function DisplayTodoDetail(tdId, pjId) {
   console.log("displaying Todo Detail");
 
   //initiate
-  const todosDetailsDiv = document.querySelector(".todo__todo-details");
-  removeAllChildNodes(todosDetailsDiv);
+  const todoDiv = document.querySelector(".todo");
+  const todosHeaderDiv = document.createElement("div");
+  todosHeaderDiv.classList.add("todo__header");
+  removeAllChildNodes(todoDiv);
 
   //title div
   const detailsTitleDiv = document.createElement("div");
@@ -289,23 +294,32 @@ function DisplayTodoDetail(tdId, pjId) {
   );
   detailsDescriptionTextDiv.setAttribute("contenteditable", "true");
 
-  const dueDiv = document.createElement("div");
+  //due date Div
+  const dueDateDiv = document.createElement("div");
+  dueDateDiv.classList.add("details__due-date");
+  /* dueDateDiv.classList.add("grid-item__content") */
+  dueDateDiv.classList.add("datePicker");
+  
 
   //adding to DOM
-  todosDetailsDiv.appendChild(detailsTitleDiv);
-  todosDetailsDiv.appendChild(detailsDescriptionDiv);
+  todoDiv.appendChild(todosHeaderDiv);
+  todoDiv.appendChild(dueDateDiv);
+  todosHeaderDiv.appendChild(detailsTitleDiv);
+  todosHeaderDiv.appendChild(detailsDescriptionDiv);
   detailsTitleDiv.appendChild(detailsTitleBorderDiv);
   detailsTitleDiv.appendChild(detailsTitleTextDiv);
   detailsDescriptionDiv.appendChild(detailsDescriptionBorderDiv);
   detailsDescriptionDiv.appendChild(detailsDescriptionTextDiv);
 
-  todosDetailsDiv.dataset.storageId = tdId;
+
   selectedTdId = tdId;
   const selectedTodo = Todo.retrieveSingleFromLocalStorage(tdId);
 
   detailsTitleTextDiv.textContent = selectedTodo.title;
 
   detailsDescriptionTextDiv.textContent = selectedTodo.description;
+
+  dueDateDiv.textContent = selectedTodo.dueDate;
 
   Add_Component_Double_Click_Cursor(detailsDescriptionDiv);
   detailsDescriptionDiv.addEventListener("doubleClickCursor", (event) => {
@@ -325,6 +339,19 @@ function DisplayTodoDetail(tdId, pjId) {
     }
     selectedTodo.description = detailsDescriptionTextDiv.textContent;
     Todo.saveToLocalStorage(selectedTodo, pjId);
+  });
+
+  //date picker functionality for due date
+  let dueDate;
+  const picker = datepicker(".datePicker", {
+    showAllDates: true,
+    onSelect: (instance, date) => {
+      dueDateDiv.textContent = format(picker.dateSelected, "dd-MMM-yyyy");
+      // Do stuff when a date is selected (or unselected) on the calendar.
+      // You have access to the datepicker instance for convenience.
+      selectedTodo.dueDate = format(picker.dateSelected, "dd-MMM-yyyy");
+      Todo.saveToLocalStorage(selectedTodo, pjId);
+    },
   });
 }
 
@@ -352,6 +379,10 @@ function displayDeleteTodoButton(tdId) {
   console.log("TdId for deleting: " + tdId);
   const deleteTodoDiv = document.querySelector(".project-todo__delete-todo");
   removeAllChildNodes(deleteTodoDiv);
+  if (selectedTdId === "") {
+    console.log("nothing selected");
+    return;
+  }
   const btn = document.createElement("button");
   btn.classList.add("toolbar__button");
   btn.classList.add("tooltip");
@@ -441,6 +472,7 @@ function AddTodo() {
 
 function deleteProject() {
   Project.deleteProjectInLocalStorage(selectedPjId);
+  selectedPjId = "";
   displayProjectList();
   displayProjectDetail();
   displayTodoList();
@@ -448,5 +480,6 @@ function deleteProject() {
 
 function deleteTodo() {
   Todo.deleteTodoInLocalStorage(selectedTdId, selectedPjId);
+  selectedTdId = "";
   displayTodoList(selectedPjId);
 }

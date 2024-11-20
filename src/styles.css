@@ -268,8 +268,20 @@ body {
 
 
 
-.todo__todo-details {
+.todo__header {
   display: flex;
   flex-direction: column;
-  /* gap: 1rem; */
+}
+
+.details__due-date {
+  font-weight: 600;
+  color: hsl(0, 0%, 35%);
+  padding-left: 1.5rem;
+  display: flex;
+  align-items: center;
+  height: 3.5rem;
+  border-radius: var(--border-radius-small);
+  background-color: hsl(0, 0%, 89%);
+  position: relative;
+  overflow-x: unset;
 }

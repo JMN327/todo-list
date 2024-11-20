@@ -32,17 +32,17 @@ export default class Project {
     return x.toString();
   }
 
-  static saveToLocalStorage(Project) {
+    static saveToLocalStorage(pj) {
     if (!storageAvailable) {
       return;
     }
 
     let data = {
-      title: Project.#title,
-      description: Project.#description,
-      todoArr: Project.#todoArr,
-      storageId: Project.#storageId,
-      createdDate: Project.#createdDate,
+      title: pj.#title,
+      description: pj.#description,
+      todoArr: pj.#todoArr,
+      storageId: pj.#storageId,
+      createdDate: pj.#createdDate,
     };
 
     //check if array of keys are being stored in projectIdArray and initiate them if not
@@ -57,13 +57,13 @@ export default class Project {
     );
 
     // check if this project already exists in storage.  If not add it to projectIdArray
-    if (!projectIdArray.includes(Project.#storageId)) {
-      projectIdArray.push(Project.#storageId);
+    if (!projectIdArray.includes(pj.#storageId)) {
+      projectIdArray.push(pj.#storageId);
       localStorage.setItem("projectIdArray", JSON.stringify(projectIdArray));
     }
 
     // write the project data to storage
-    localStorage.setItem(Project.#storageId, JSON.stringify(data));
+    localStorage.setItem(pj.#storageId, JSON.stringify(data));
   }
 
   static updateIdArray(newIdArray) {
@@ -117,24 +117,24 @@ export default class Project {
     return projects;
   }
 
-  static deleteProjectInLocalStorage(storageId) {
-    console.log("deleting " + storageId)
+  static deleteProjectInLocalStorage(pjId) {
+    console.log("deleting " + pjId)
     //get project array
     const projectIdArray = Array.from(
       JSON.parse(localStorage.getItem("projectIdArray"))
     );
     //check the storage ID given is in the array
-    if (!projectIdArray.includes(storageId)) {
+    if (!projectIdArray.includes(pjId)) {
       return;
     }
     //remove all todos from that project
-    const pjTodoArray = Project.retrieveSingleFromLocalStorage(storageId).todoArr;
+    const pjTodoArray = Project.retrieveSingleFromLocalStorage(pjId).todoArr;
     console.log("pj array for deleting " + pjTodoArray)
-    pjTodoArray.forEach((td) => Todo.deleteTodoInLocalStorage(td))
+    pjTodoArray.forEach((tdId) => Todo.deleteTodoInLocalStorage(tdId, pjId))
 
     //remove the project
-    projectIdArray.splice(projectIdArray.indexOf(storageId), 1);
-    localStorage.removeItem(storageId);
+    projectIdArray.splice(projectIdArray.indexOf(pjId), 1);
+    localStorage.removeItem(pjId);
     localStorage.setItem("projectIdArray", JSON.stringify(projectIdArray));
   }
 
