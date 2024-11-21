@@ -12,6 +12,7 @@ import Todo from "./Todo.js";
 import datepicker from "js-datepicker";
 import "js-datepicker/dist/datepicker.min.css";
 import { format } from "date-fns";
+const rater = require("rater-js");
 
 let selectedPjId;
 let selectedTdId;
@@ -294,23 +295,29 @@ function DisplayTodoDetail(tdId, pjId) {
   );
   detailsDescriptionTextDiv.setAttribute("contenteditable", "true");
 
-  //due date Div
+  //due date div
   const dueDateDiv = document.createElement("div");
   dueDateDiv.classList.add("details__due-date");
   /* dueDateDiv.classList.add("grid-item__content") */
   dueDateDiv.classList.add("datePicker");
-  
+
+  //priority rater div
+  const priorityDiv = document.createElement("div");
+  priorityDiv.classList.add("details__priority");
+  const priorityRaterDiv = document.createElement("div");
+  priorityRaterDiv.classList.add("rater");
+  priorityDiv.appendChild(priorityRaterDiv);
 
   //adding to DOM
   todoDiv.appendChild(todosHeaderDiv);
   todoDiv.appendChild(dueDateDiv);
+  todoDiv.appendChild(priorityDiv);
   todosHeaderDiv.appendChild(detailsTitleDiv);
   todosHeaderDiv.appendChild(detailsDescriptionDiv);
   detailsTitleDiv.appendChild(detailsTitleBorderDiv);
   detailsTitleDiv.appendChild(detailsTitleTextDiv);
   detailsDescriptionDiv.appendChild(detailsDescriptionBorderDiv);
   detailsDescriptionDiv.appendChild(detailsDescriptionTextDiv);
-
 
   selectedTdId = tdId;
   const selectedTodo = Todo.retrieveSingleFromLocalStorage(tdId);
@@ -342,17 +349,33 @@ function DisplayTodoDetail(tdId, pjId) {
   });
 
   //date picker functionality for due date
-  let dueDate;
   const picker = datepicker(".datePicker", {
     showAllDates: true,
     onSelect: (instance, date) => {
-      dueDateDiv.textContent = format(picker.dateSelected, "dd-MMM-yyyy");
+      if (!date) {
+        return;
+      }
+      console.log(date.getDate());
+      dueDateDiv.textContent = format(date, "EEEE do MMMM yyyy");
       // Do stuff when a date is selected (or unselected) on the calendar.
       // You have access to the datepicker instance for convenience.
-      selectedTodo.dueDate = format(picker.dateSelected, "dd-MMM-yyyy");
+      selectedTodo.dueDate = date;
       Todo.saveToLocalStorage(selectedTodo, pjId);
     },
   });
+
+  const myRater = rater({
+    element: document.querySelector(".rater"),
+    starSize: 24,
+    showToolTip: false,
+    rateCallback: function rateCallback(rating, done) {
+      selectedTodo.priority = rating;
+      Todo.saveToLocalStorage(selectedTodo, pjId);
+      myRater.setRating(rating)
+      done();
+    },
+  });
+  myRater.setRating(selectedTodo.priority)
 }
 
 function displayDeleteProjectButton() {

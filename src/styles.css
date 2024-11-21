@@ -273,7 +273,7 @@ body {
   flex-direction: column;
 }
 
-.details__due-date {
+.details__due-date, .details__priority {
   font-weight: 600;
   color: hsl(0, 0%, 35%);
   padding-left: 1.5rem;
@@ -284,4 +284,25 @@ body {
   background-color: hsl(0, 0%, 89%);
   position: relative;
   overflow-x: unset;
+}
+
+.star-rating {
+  width: 0;
+  position: relative;
+  display:inline-block;
+  background-image: url("./stars/star_0.svg") !important;
+  background-position: 0 0;
+  background-repeat: repeat-x;
+  cursor: pointer;
+
+}
+
+.star-rating .star-value{
+  width: 0;
+  position: relative;
+  display:inline-block;
+  background-image: url("./stars/star_1.svg") !important;
+  background-position: 0 0;
+  background-repeat: repeat-x;
+  cursor: pointer;
 }

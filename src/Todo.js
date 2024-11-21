@@ -18,7 +18,7 @@ export default class Todo {
     title = "Untitled",//numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("todoTicker") || 0)) + 1),
     description = "Add description here",
     dueDate = null,
-    priority = 0,
+    priority = 1,
     completed = false,
     project = "P1",
     storageId = "T" + Todo.#todoTicker,
