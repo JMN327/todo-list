@@ -45,7 +45,7 @@ export default class Todo {
     let data = {
       title: Todo.#title,
       description: Todo.#description,
-      dueDate: format(Todo.#dueDate, "dd-MMM-yyyy"),
+      dueDate: Todo.#dueDate,
       priority: Todo.#priority,
       completed: Todo.#completed,
       project: Todo.#project,
@@ -160,8 +160,12 @@ export default class Todo {
   }
 
   set dueDate(newDueDate) {
+    if (!newDueDate) {
+      this.#dueDate = null
+    } else {
     newDueDate = format(newDueDate, "dd-MMM-yyyy");
     this.#dueDate = newDueDate;
+    }
   }
 
   get dueDate() {

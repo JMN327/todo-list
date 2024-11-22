@@ -21,11 +21,25 @@ export function displayProjectList() {
   console.log("displaying Project List");
   //Set up the Project list as a grid container
 
-  let projectList = document.querySelector(".projects__project-list");
-  removeAllChildNodes(projectList);
+  let projectListWrapper = document.querySelector(
+    ".projects__project-list-wrapper"
+  );
+  removeAllChildNodes(projectListWrapper);
+
+  let projectListLabel = document.createElement("div");
+  projectListLabel.classList.add("label");
+  projectListLabel.textContent = "Projects";
+  projectListWrapper.appendChild(projectListLabel);
+
+  let projectList = document.createElement("div");
+  projectList.classList.add("projects__project-list");
+
+  projectListWrapper.appendChild(projectListLabel);
+  projectListWrapper.appendChild(projectList);
 
   let gridContainerDiv = document.createElement("div");
   gridContainerDiv.classList.add("project-list__grid-container");
+
   projectList.appendChild(gridContainerDiv);
 
   Add_Component_Drag_Drop_Container(gridContainerDiv);
@@ -71,7 +85,7 @@ export function displayProjectList() {
       console.log("project selection event fired");
       selectedPjId = pj.storageId;
       displayProjectDetail(pj.storageId);
-      const todosDetailsDiv = document.querySelector(".todo__header");
+      const todosDetailsDiv = document.querySelector(".todo");
       removeAllChildNodes(todosDetailsDiv);
       displayDeleteProjectButton();
     });
@@ -171,8 +185,20 @@ export function displayProjectDetail(pjId) {
 export function displayTodoList(pjId) {
   console.log("displaying Todo List " + pjId);
   //remove previous nodes in the list
-  const todoListDiv = document.querySelector(".project-todos__todo-list");
-  removeAllChildNodes(todoListDiv);
+  const todoListWrapperDiv = document.querySelector(
+    ".project-todos__todo-list-wrapper"
+  );
+  removeAllChildNodes(todoListWrapperDiv);
+
+  const todoListLabelDiv = document.createElement("div");
+  todoListLabelDiv.classList.add("label");
+  todoListLabelDiv.textContent = "Todos";
+  todoListWrapperDiv.appendChild(todoListLabelDiv);
+
+  const todoListDiv = document.createElement("div");
+  todoListDiv.classList.add("project-todos__todo-list");
+  todoListWrapperDiv.appendChild(todoListDiv);
+
   //Set up the Todo list as a grid container
   const gridContainerDiv = document.createElement("div");
   gridContainerDiv.classList.add("todo-list__grid-container");
@@ -296,22 +322,39 @@ function DisplayTodoDetail(tdId, pjId) {
   detailsDescriptionTextDiv.setAttribute("contenteditable", "true");
 
   //due date div
+  const dueDateWrapperDiv = document.createElement("div");
+  dueDateWrapperDiv.classList.add("details__due-date-wrapper");
+
+  const dueDateLabelDiv = document.createElement("div");
+  dueDateLabelDiv.classList.add("label");
+  dueDateLabelDiv.textContent = "Due Date";
+  dueDateWrapperDiv.appendChild(dueDateLabelDiv);
+
   const dueDateDiv = document.createElement("div");
   dueDateDiv.classList.add("details__due-date");
-  /* dueDateDiv.classList.add("grid-item__content") */
   dueDateDiv.classList.add("datePicker");
+  dueDateWrapperDiv.appendChild(dueDateDiv);
 
   //priority rater div
+  const priorityWrapperDiv = document.createElement("div");
+  priorityWrapperDiv.classList.add("details__priority-wrapper");
+
+  const priorityLabelDiv = document.createElement("div");
+  priorityLabelDiv.classList.add("label");
+  priorityLabelDiv.textContent = "Priority";
+  priorityWrapperDiv.appendChild(priorityLabelDiv);
+
   const priorityDiv = document.createElement("div");
   priorityDiv.classList.add("details__priority");
   const priorityRaterDiv = document.createElement("div");
   priorityRaterDiv.classList.add("rater");
   priorityDiv.appendChild(priorityRaterDiv);
+  priorityWrapperDiv.appendChild(priorityDiv);
 
   //adding to DOM
   todoDiv.appendChild(todosHeaderDiv);
-  todoDiv.appendChild(dueDateDiv);
-  todoDiv.appendChild(priorityDiv);
+  todoDiv.appendChild(dueDateWrapperDiv);
+  todoDiv.appendChild(priorityWrapperDiv);
   todosHeaderDiv.appendChild(detailsTitleDiv);
   todosHeaderDiv.appendChild(detailsDescriptionDiv);
   detailsTitleDiv.appendChild(detailsTitleBorderDiv);
@@ -371,11 +414,11 @@ function DisplayTodoDetail(tdId, pjId) {
     rateCallback: function rateCallback(rating, done) {
       selectedTodo.priority = rating;
       Todo.saveToLocalStorage(selectedTodo, pjId);
-      myRater.setRating(rating)
+      myRater.setRating(rating);
       done();
     },
   });
-  myRater.setRating(selectedTodo.priority)
+  myRater.setRating(selectedTodo.priority);
 }
 
 function displayDeleteProjectButton() {
