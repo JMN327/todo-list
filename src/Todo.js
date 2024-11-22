@@ -69,7 +69,7 @@ export default class Todo {
 
     // check if this todo already exists in storage.  If not add it to todoIdArray
     if (!todoIdArray.includes(Todo.#storageId)) {
-      todoIdArray.push(Todo.#storageId);
+      todoIdArray.unshift(Todo.#storageId);
       localStorage.setItem("todoIdArray", JSON.stringify(todoIdArray));
     }
 
@@ -138,7 +138,7 @@ export default class Todo {
   set title(newTitle) {
     newTitle = newTitle.trim();
     if (newTitle === "") {
-      throw "The name cannot be empty";
+      //throw "The name cannot be empty";
     }
     this.#title = newTitle;
   }
@@ -150,7 +150,7 @@ export default class Todo {
   set description(newDescription) {
     newDescription = newDescription.trim();
     if (newDescription === "") {
-      throw "The name cannot be empty";
+      //throw "The name cannot be empty";
     }
     this.#description = newDescription;
   }

@@ -17,8 +17,14 @@ const rater = require("rater-js");
 let selectedPjId;
 let selectedTdId;
 
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
 export function displayProjectList() {
-  console.log("displaying Project List");
+  console.log("displaying Project List",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
   //Set up the Project list as a grid container
 
   let projectListWrapper = document.querySelector(
@@ -45,7 +51,7 @@ export function displayProjectList() {
   Add_Component_Drag_Drop_Container(gridContainerDiv);
   //Update the order of stored projects to reflect a drag/drop event
   gridContainerDiv.addEventListener("dragDrop", () => {
-    console.log("dragDrop event fired");
+    console.log("dragDrop event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     const items = gridContainerDiv.querySelectorAll(".grid-item__content");
     let newIdArray = [];
     items.forEach((item) => {
@@ -71,10 +77,10 @@ export function displayProjectList() {
     //give content div behavior
     Add_Component_Update_Storage_triggers(listItemContentDiv);
     listItemContentDiv.addEventListener("updateNeeded", () => {
-      console.log("Update storage trigger fired 1");
-      if (listItemTitleDiv.textContent === "") {
+      console.log("Update storage trigger fired 1",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+      /* if (listItemTitleDiv.textContent === "") {
         listItemTitleDiv.textContent = "Untitled";
-      }
+      } */
       pj.title = listItemTitleDiv.textContent;
       Project.saveToLocalStorage(pj);
       displayProjectDetail(pj.storageId);
@@ -82,9 +88,9 @@ export function displayProjectList() {
 
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
-      console.log("project selection event fired");
+      console.log("project selection event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
       selectedPjId = pj.storageId;
-      displayProjectDetail(pj.storageId);
+      displayProjectDetail(selectedPjId);
       const todosDetailsDiv = document.querySelector(".todo");
       removeAllChildNodes(todosDetailsDiv);
       displayDeleteProjectButton();
@@ -92,7 +98,7 @@ export function displayProjectList() {
 
     Add_Component_Double_Click_Cursor(listItemContentDiv);
     listItemContentDiv.addEventListener("doubleClickCursor", (event) => {
-      console.log("doubleClickCursor event fired");
+      console.log("doubleClickCursor event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     });
 
     let listItemBorderDiv = document.createElement("div");
@@ -105,7 +111,7 @@ export function displayProjectList() {
     listItemTitleDiv.textContent = pj.title;
     Add_Component_Max_Length(listItemTitleDiv, 30);
     listItemTitleDiv.addEventListener("maxLengthReached", () => {
-      console.log("maxLengthReached event fired");
+      console.log("maxLengthReached event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     });
 
     gridContainerDiv.appendChild(listItemDiv);
@@ -118,7 +124,7 @@ export function displayProjectList() {
 }
 
 export function displayProjectDetail(pjId) {
-  console.log("displaying Project Detail " + pjId);
+  console.log("displaying Project Detail for: " + pjId,  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
 
   const projectTodosDetailsDiv = document.querySelector(
     ".project-todos__details"
@@ -151,9 +157,9 @@ export function displayProjectDetail(pjId) {
   detailsDescriptionDiv.appendChild(detailsDescriptionBorderDiv);
   detailsDescriptionDiv.appendChild(detailsDescriptionTextDiv);
 
-  projectTodosDetailsDiv.dataset.storageId = pjId;
-  selectedPjId = pjId;
-  const pj = Project.retrieveSingleFromLocalStorage(pjId);
+  projectTodosDetailsDiv.dataset.storageId = selectedPjId;
+  //selectedPjId = pjId;
+  const pj = Project.retrieveSingleFromLocalStorage(selectedPjId);
 
   detailsTitleTextDiv.textContent = pj.title;
 
@@ -161,17 +167,17 @@ export function displayProjectDetail(pjId) {
 
   Add_Component_Double_Click_Cursor(detailsDescriptionDiv);
   detailsDescriptionDiv.addEventListener("doubleClickCursor", (event) => {
-    console.log("doubleClickCursor event fired");
+    console.log("doubleClickCursor event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
   });
 
   Add_Component_Max_Length(detailsDescriptionTextDiv, 120);
   detailsDescriptionTextDiv.addEventListener("maxLengthReached", () => {
-    console.log("maxLengthReached event fired");
+    console.log("maxLengthReached event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
   });
 
   Add_Component_Update_Storage_triggers(detailsDescriptionDiv);
   detailsDescriptionDiv.addEventListener("updateNeeded", () => {
-    console.log("Update storage trigger fired 2");
+    console.log("Update storage trigger fired 2",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     if (detailsDescriptionTextDiv.textContent === "") {
       detailsDescriptionTextDiv.textContent = "Add description here";
     }
@@ -183,12 +189,18 @@ export function displayProjectDetail(pjId) {
 }
 
 export function displayTodoList(pjId) {
-  console.log("displaying Todo List " + pjId);
+  console.log("displaying Todo List " + pjId,  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
   //remove previous nodes in the list
   const todoListWrapperDiv = document.querySelector(
     ".project-todos__todo-list-wrapper"
   );
   removeAllChildNodes(todoListWrapperDiv);
+
+  const projectTodos = Project.retrieveTodos(pjId);
+  if (!projectTodos) {
+    displayAddTodoButton();
+    return;
+  }
 
   const todoListLabelDiv = document.createElement("div");
   todoListLabelDiv.classList.add("label");
@@ -207,7 +219,7 @@ export function displayTodoList(pjId) {
   Add_Component_Drag_Drop_Container(gridContainerDiv);
   //Update the order of stored todos to reflect a drag/drop event
   gridContainerDiv.addEventListener("dragDrop", () => {
-    console.log("dragDrop event fired");
+    console.log("dragDrop event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     let items = gridContainerDiv.querySelectorAll(".grid-item__content");
     let idArray = [];
     items.forEach((item) => {
@@ -220,11 +232,7 @@ export function displayTodoList(pjId) {
   });
 
   //get all todos from local storage ready to display
-  const projectTodos = Project.retrieveTodos(pjId);
-  if (!projectTodos) {
-    displayAddTodoButton();
-    return;
-  }
+
 
   // Loop through all todos in storage to create the todo list
   projectTodos.forEach((td) => {
@@ -241,26 +249,26 @@ export function displayTodoList(pjId) {
     //give content div behavior
     Add_Component_Update_Storage_triggers(listItemContentDiv);
     listItemContentDiv.addEventListener("updateNeeded", () => {
-      console.log("Update storage trigger fired 3");
-      if (listItemTitleDiv.textContent === "") {
+      console.log("Update storage trigger fired 3",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+      /* if (listItemTitleDiv.textContent === "") {
         listItemTitleDiv.textContent = "Untitled";
-      }
+      } */
       td.title = listItemTitleDiv.textContent;
       Todo.saveToLocalStorage(td, pjId);
-      DisplayTodoDetail(tdId, pjId);
+      displayTodoDetail(tdId, pjId);
     });
 
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       selectedTdId = td.storageId;
-      console.log("Todo selection event fired");
-      DisplayTodoDetail(tdId, pjId);
-      displayDeleteTodoButton(tdId);
+      console.log("Todo selection event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+      displayTodoDetail(selectedTdId, pjId);
+      displayDeleteTodoButton(selectedTdId);
     });
 
     Add_Component_Double_Click_Cursor(listItemContentDiv);
     listItemContentDiv.addEventListener("doubleClickCursor", (event) => {
-      console.log("doubleClickCursor event fired");
+      console.log("doubleClickCursor event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     });
 
     let listItemBorderDiv = document.createElement("div");
@@ -273,7 +281,7 @@ export function displayTodoList(pjId) {
     listItemTitleDiv.textContent = td.title;
     Add_Component_Max_Length(listItemTitleDiv, 36);
     listItemTitleDiv.addEventListener("maxLengthReached", () => {
-      console.log("maxLengthReached event fired");
+      console.log("maxLengthReached event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     });
 
     gridContainerDiv.appendChild(listItemDiv);
@@ -285,14 +293,8 @@ export function displayTodoList(pjId) {
   displayAddTodoButton();
 }
 
-function removeAllChildNodes(parent) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-}
-
-function DisplayTodoDetail(tdId, pjId) {
-  console.log("displaying Todo Detail");
+function displayTodoDetail(tdId, pjId) {
+  console.log("displaying Todo Detail",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
 
   //initiate
   const todoDiv = document.querySelector(".todo");
@@ -362,8 +364,10 @@ function DisplayTodoDetail(tdId, pjId) {
   detailsDescriptionDiv.appendChild(detailsDescriptionBorderDiv);
   detailsDescriptionDiv.appendChild(detailsDescriptionTextDiv);
 
-  selectedTdId = tdId;
-  const selectedTodo = Todo.retrieveSingleFromLocalStorage(tdId);
+  console.log(selectedTdId)
+  //selectedTdId = tdId;
+  console.log(selectedTdId)
+  const selectedTodo = Todo.retrieveSingleFromLocalStorage(selectedTdId);
 
   detailsTitleTextDiv.textContent = selectedTodo.title;
 
@@ -373,17 +377,17 @@ function DisplayTodoDetail(tdId, pjId) {
 
   Add_Component_Double_Click_Cursor(detailsDescriptionDiv);
   detailsDescriptionDiv.addEventListener("doubleClickCursor", (event) => {
-    console.log("doubleClickCursor event fired");
+    console.log("doubleClickCursor event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
   });
 
   Add_Component_Max_Length(detailsDescriptionTextDiv, 120);
   detailsDescriptionTextDiv.addEventListener("maxLengthReached", () => {
-    console.log("maxLengthReached event fired");
+    console.log("maxLengthReached event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
   });
 
   Add_Component_Update_Storage_triggers(detailsDescriptionDiv);
   detailsDescriptionDiv.addEventListener("updateNeeded", () => {
-    console.log("Update storage trigger fired 4");
+    console.log("Update storage trigger fired 4",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
     if (detailsDescriptionTextDiv.textContent === "") {
       detailsDescriptionTextDiv.textContent = "Add description here";
     }
@@ -442,7 +446,7 @@ function displayDeleteProjectButton() {
 }
 
 function displayDeleteTodoButton(tdId) {
-  console.log("TdId for deleting: " + tdId);
+  console.log("TdId for deleting: " + tdId,  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
   const deleteTodoDiv = document.querySelector(".project-todo__delete-todo");
   removeAllChildNodes(deleteTodoDiv);
   if (selectedTdId === "") {
@@ -489,7 +493,6 @@ function displayAddTodoButton() {
   const newTodoDiv = document.querySelector(".project-todos__new-todo");
   const pjId = selectedPjId;
   removeAllChildNodes(newTodoDiv);
-  console.log("pjId " + pjId);
   if (!pjId) {
     return;
   }
@@ -519,7 +522,10 @@ function addProject() {
   );
   const pjTitleDiv = pjContentDiv.querySelector(".grid-item__Title");
   const dblClick = new MouseEvent("dblclick");
+  const mousedown = new MouseEvent("mousedown")
+  pjTitleDiv.parentNode.dispatchEvent(mousedown);
   pjTitleDiv.parentNode.dispatchEvent(dblClick);
+  
 }
 
 function AddTodo() {
@@ -533,6 +539,8 @@ function AddTodo() {
   );
   const tdTitleDiv = tdContentDiv.querySelector(".grid-item__Title");
   const dblClick = new MouseEvent("dblclick");
+  const mousedown = new MouseEvent("mousedown")
+  tdTitleDiv.parentNode.dispatchEvent(mousedown);
   tdTitleDiv.parentNode.dispatchEvent(dblClick);
 }
 

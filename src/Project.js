@@ -70,11 +70,12 @@ export default class Project {
     localStorage.setItem("projectIdArray", JSON.stringify(newIdArray));
   }
 
-  static retrieveTodos(projectId) {
-    if (!projectId) {
+  static retrieveTodos(pjId) {
+    if (!pjId) {
       return;      
     }
-    const todoIds = JSON.parse(localStorage.getItem(projectId)).todoArr;
+    const pj = JSON.parse(localStorage.getItem(pjId))
+    const todoIds = Array.from(pj.todoArr);
     let todos = [];
     todoIds.forEach((id) => {
       todos.push(Todo.retrieveSingleFromLocalStorage(id));
@@ -82,7 +83,7 @@ export default class Project {
     return todos;
   }
 
-  static retrieveSingleFromLocalStorage(storageId) {
+  static retrieveSingleFromLocalStorage(pjId) {
     if (!storageAvailable) {
       return;
     }
@@ -93,8 +94,8 @@ export default class Project {
       JSON.parse(localStorage.getItem("projectIdArray"))
     );
 
-    if (projectIdArray.includes(storageId)) {
-      let storedInfo = JSON.parse(localStorage.getItem(storageId));
+    if (projectIdArray.includes(pjId)) {
+      let storedInfo = JSON.parse(localStorage.getItem(pjId));
       return new Project(storedInfo);
     }
   }
@@ -128,9 +129,10 @@ export default class Project {
       return;
     }
     //remove all todos from that project
-    const pjTodoArray = Project.retrieveSingleFromLocalStorage(pjId).todoArr;
-    console.log("pj array for deleting " + pjTodoArray)
-    pjTodoArray.forEach((tdId) => Todo.deleteTodoInLocalStorage(tdId, pjId))
+    const pj = JSON.parse(localStorage.getItem(pjId))
+    const todoIds = Array.from(pj.todoArr);
+    console.log("pj array for deleting " + todoIds)
+    todoIds.forEach((tdId) => Todo.deleteTodoInLocalStorage(tdId, pjId))
 
     //remove the project
     projectIdArray.splice(projectIdArray.indexOf(pjId), 1);
@@ -169,7 +171,7 @@ export default class Project {
   static addTodo(projectId, todoID) {
     const pj = Project.retrieveSingleFromLocalStorage(projectId);
     if (!pj.todoArr.includes(todoID)) {
-      pj.todoArr.push(todoID);
+      pj.todoArr.unshift(todoID);
       Project.saveToLocalStorage(pj);
     }
   }
@@ -177,7 +179,7 @@ export default class Project {
   set title(newTitle) {
     newTitle = newTitle.trim();
     if (newTitle === "") {
-      throw "The name cannot be empty";
+      //throw "The name cannot be empty";
     }
     this.#title = newTitle;
   }
@@ -189,7 +191,7 @@ export default class Project {
   set description(newDescription) {
     newDescription = newDescription.trim();
     if (newDescription === "") {
-      throw "The name cannot be empty";
+      //throw "The name cannot be empty";
     }
     this.#description = newDescription;
   }

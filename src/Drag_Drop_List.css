@@ -3,7 +3,7 @@
     grid-template-columns: 1fr;
     gap: .625rem;
     padding: 0px;
-
+    /* scroll-snap-type: y mandatory; */
   }
 
   .grid-item {
@@ -13,6 +13,7 @@
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
     overflow-y: hidden;
+    /* scroll-snap-align: top */
   }
   
   .moving {
