@@ -57,7 +57,7 @@ export function displayProjectList() {
     items.forEach((item) => {
       newIdArray.push(item.dataset.storageId);
     });
-    Project.updateIdArray(newIdArray);
+    Project.replaceIdArray(newIdArray);
   });
 
   //get all projects from local storage ready to display

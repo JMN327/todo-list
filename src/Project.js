@@ -10,6 +10,7 @@ export default class Project {
   #todoArr;
   #storageId;
   #createdDate;
+  static #idArray = JSON.parse(localStorage.getItem("projectIdArray")) || [];
 
   constructor({
     title = "Untitled", //numberToText.convertToText(parseInt(JSON.parse(localStorage.getItem("projectTicker") || 0))+1),
@@ -32,71 +33,58 @@ export default class Project {
     return x.toString();
   }
 
-    static saveToLocalStorage(pj) {
+  static #saveIdArrayToLocalStorage() {
+    localStorage.setItem("projectIdArray", JSON.stringify(Project.#idArray));
+  }
+
+  static saveToLocalStorage(pj) {
     if (!storageAvailable) {
       return;
     }
 
-    let data = {
+    let pjData = {
       title: pj.#title,
       description: pj.#description,
       todoArr: pj.#todoArr,
       storageId: pj.#storageId,
       createdDate: pj.#createdDate,
     };
-
-    //check if array of keys are being stored in projectIdArray and initiate them if not
-    if (localStorage.getItem("projectIdArray") == null) {
-      /*       Project.#initializeLocalStorage();
-       */ localStorage.setItem("projectIdArray", "[]");
-    }
-
-    //retrieve projectIdArray
-    let projectIdArray = Array.from(
-      JSON.parse(localStorage.getItem("projectIdArray"))
-    );
+    // write the project data to storage
+    localStorage.setItem(pj.#storageId, JSON.stringify(pjData));
 
     // check if this project already exists in storage.  If not add it to projectIdArray
-    if (!projectIdArray.includes(pj.#storageId)) {
-      projectIdArray.push(pj.#storageId);
-      localStorage.setItem("projectIdArray", JSON.stringify(projectIdArray));
+    if (!Project.#idArray.includes(pj.#storageId)) {
+      Project.#idArray.push(pj.#storageId);
+      Project.#saveIdArrayToLocalStorage();
     }
-
-    // write the project data to storage
-    localStorage.setItem(pj.#storageId, JSON.stringify(data));
   }
 
-  static updateIdArray(newIdArray) {
-    localStorage.setItem("projectIdArray", JSON.stringify(newIdArray));
+  static replaceIdArray(newIdArray) {
+    Project.#idArray = newIdArray;
+    Project.#saveIdArrayToLocalStorage();
   }
 
   static retrieveTodos(pjId) {
     if (!pjId) {
-      return;      
+      return;
     }
-    const pj = JSON.parse(localStorage.getItem(pjId))
-    const todoIds = Array.from(pj.todoArr);
-    let todos = [];
-    todoIds.forEach((id) => {
-      todos.push(Todo.retrieveSingleFromLocalStorage(id));
+    const todoIds = JSON.parse(localStorage.getItem(pjId)).todoArr;
+    let todoArray = [];
+    todoIds.forEach((tdId) => {
+      todoArray.push(Todo.retrieveSingleFromLocalStorage(tdId));
     });
-    return todos;
+    return todoArray;
   }
 
   static retrieveSingleFromLocalStorage(pjId) {
     if (!storageAvailable) {
       return;
     }
+    Project.#initiateDefaultProject();
 
-    let projectIdArray = [];
-    Project.#makeDefaultIfNull();
-    projectIdArray = Array.from(
-      JSON.parse(localStorage.getItem("projectIdArray"))
-    );
-
-    if (projectIdArray.includes(pjId)) {
-      let storedInfo = JSON.parse(localStorage.getItem(pjId));
-      return new Project(storedInfo);
+    if (Project.#idArray.includes(pjId)) {
+      let pjData = JSON.parse(localStorage.getItem(pjId));
+      return new Project(pjData);
     }
   }
 
@@ -104,62 +92,40 @@ export default class Project {
     if (!storageAvailable) {
       return;
     }
-
-    let projectIdArray = [];
-    Project.#makeDefaultIfNull();
-    projectIdArray = Array.from(
-      JSON.parse(localStorage.getItem("projectIdArray"))
-    );
-
-    let projects = [];
-    projectIdArray.forEach((storageId) => {
-      projects.push(new Project(JSON.parse(localStorage.getItem(storageId))));
+    Project.#initiateDefaultProject();
+    let projectArray = [];
+    Project.#idArray.forEach((storageId) => {
+      projectArray.push(
+        new Project(JSON.parse(localStorage.getItem(storageId)))
+      );
     });
-    return projects;
+    return projectArray;
   }
 
   static deleteProjectInLocalStorage(pjId) {
-    console.log("deleting " + pjId)
-    //get project array
-    const projectIdArray = Array.from(
-      JSON.parse(localStorage.getItem("projectIdArray"))
-    );
-    //check the storage ID given is in the array
-    if (!projectIdArray.includes(pjId)) {
+    if (!Project.#idArray.includes(pjId)) {
       return;
     }
     //remove all todos from that project
-    const pj = JSON.parse(localStorage.getItem(pjId))
-    const todoIds = Array.from(pj.todoArr);
-    console.log("pj array for deleting " + todoIds)
-    todoIds.forEach((tdId) => Todo.deleteTodoInLocalStorage(tdId, pjId))
-
+    const todoIds = JSON.parse(localStorage.getItem(pjId)).todoArr;
+    todoIds.forEach((tdId) => Todo.deleteTodoInLocalStorage(tdId, pjId));
     //remove the project
-    projectIdArray.splice(projectIdArray.indexOf(pjId), 1);
+    Project.#idArray.splice(Project.#idArray.indexOf(pjId), 1);
     localStorage.removeItem(pjId);
-    localStorage.setItem("projectIdArray", JSON.stringify(projectIdArray));
+    Project.#saveIdArrayToLocalStorage();
   }
 
-  static removeTodoFromProjectsTodoArray(tdId, pjId) {
-    console.log(`removing ${tdId} from project ID array`)
-    //get project array
-    const projectTodoArray = Array.from(
-      JSON.parse(localStorage.getItem(pjId)).todoArr
-    );
-
-    //check the storage ID given is in the array
-    if (!projectTodoArray.includes(tdId)) {
+  static removeTodoFromTodoArray(tdId, pjId) {
+    console.log(`removing ${tdId} from ${pjId}`);
+    const pj = Project.retrieveSingleFromLocalStorage(pjId);
+    if (!pj.todoArr.includes(tdId)) {
       return;
     }
-    //remove  todos from the project Array
-    projectTodoArray.splice(projectTodoArray.indexOf(tdId), 1);
-    const pj = Project.retrieveSingleFromLocalStorage(pjId)
-    pj.todoArr = projectTodoArray
-    Project.saveToLocalStorage(pj)
-    console.log(`new Id array ${projectTodoArray}`);
+    pj.todoArr.splice(pj.todoArr.indexOf(tdId), 1);
+    Project.saveToLocalStorage(pj);
   }
 
-  static #makeDefaultIfNull() {
+  static #initiateDefaultProject() {
     if (localStorage.getItem("projectIdArray") == null) {
       let defaultProject = new Project();
       defaultProject.title = "Default Project";
@@ -168,7 +134,7 @@ export default class Project {
     }
   }
 
-  static addTodo(projectId, todoID) {
+  static linkTodo(projectId, todoID) {
     const pj = Project.retrieveSingleFromLocalStorage(projectId);
     if (!pj.todoArr.includes(todoID)) {
       pj.todoArr.unshift(todoID);
