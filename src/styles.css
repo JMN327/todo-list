@@ -59,7 +59,7 @@ body {
   background-color: rgb(247, 247, 247);
 }
 
-.label {
+.label-text {
   display: flex;
   align-items: center;
   /* justify-content: center; */
@@ -144,6 +144,7 @@ body {
   text-align: center;
   border-radius: var(--border-radius-small);
   white-space: nowrap;
+  border: 0.25rem solid rgb(247, 247, 247);
 
   /* Position the tooltip */
   position: absolute;
@@ -199,6 +200,7 @@ body {
 .grid-item__Title::selection {
   color: rgb(255, 255, 255);
   background: hsl(0, 0%, 50%);
+  border-radius: 0.25rem;
 }
 
 .project-todos__details {

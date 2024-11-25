@@ -28,3 +28,8 @@ Todo.saveToLocalStorage(newTodo2); */
 displayProjectList();
 
 //const pj = Project.retrieveSingleFromLocalStorage("P1")
+
+/* const newProject1 = new Project();
+newProject1.todoArr = ["T1","T2"]
+Project.saveToLocalStorage(newProject1)
+console.log(newProject1.todoArr) */

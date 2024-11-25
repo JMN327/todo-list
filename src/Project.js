@@ -7,7 +7,7 @@ require("number-to-text/converters/en-us");
 export default class Project {
   #title;
   #description;
-  #todoArr;
+  #todoArr = [];
   #storageId;
   #createdDate;
   static #idArray = JSON.parse(localStorage.getItem("projectIdArray")) || [];
@@ -43,18 +43,19 @@ export default class Project {
     }
 
     let pjData = {
-      title: pj.#title,
-      description: pj.#description,
-      todoArr: pj.#todoArr,
-      storageId: pj.#storageId,
-      createdDate: pj.#createdDate,
+      title: pj.title,
+      description: pj.description,
+      todoArr: pj.todoArr,
+      storageId: pj.storageId,
+      createdDate: pj.createdDate,
     };
+    console.log("tda: " + pjData.todoArr + " " + pj.title);
     // write the project data to storage
     localStorage.setItem(pj.#storageId, JSON.stringify(pjData));
 
     // check if this project already exists in storage.  If not add it to projectIdArray
     if (!Project.#idArray.includes(pj.#storageId)) {
-      Project.#idArray.push(pj.#storageId);
+      Project.#idArray.unshift(pj.#storageId);
       Project.#saveIdArrayToLocalStorage();
     }
   }
@@ -80,7 +81,7 @@ export default class Project {
     if (!storageAvailable) {
       return;
     }
-    Project.#initiateDefaultProject();
+    Project.#makeDefaultProject();
 
     if (Project.#idArray.includes(pjId)) {
       let pjData = JSON.parse(localStorage.getItem(pjId));
@@ -92,12 +93,10 @@ export default class Project {
     if (!storageAvailable) {
       return;
     }
-    Project.#initiateDefaultProject();
+    Project.#makeDefaultProject();
     let projectArray = [];
-    Project.#idArray.forEach((storageId) => {
-      projectArray.push(
-        new Project(JSON.parse(localStorage.getItem(storageId)))
-      );
+    Project.#idArray.forEach((pjId) => {
+      projectArray.push(new Project(JSON.parse(localStorage.getItem(pjId))));
     });
     return projectArray;
   }
@@ -125,12 +124,17 @@ export default class Project {
     Project.saveToLocalStorage(pj);
   }
 
-  static #initiateDefaultProject() {
-    if (localStorage.getItem("projectIdArray") == null) {
+  static #makeDefaultProject() {
+    if (Project.#idArray.length == 0) {
+      console.log("making default project");
       let defaultProject = new Project();
       defaultProject.title = "Default Project";
       defaultProject.description = "This is the default project";
       Project.saveToLocalStorage(defaultProject);
+      let secondPj = new Project();
+      secondPj.title = "2nd";
+      secondPj.description = "This is the 2nd project";
+      Project.saveToLocalStorage(secondPj);
     }
   }
 

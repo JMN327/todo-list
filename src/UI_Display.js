@@ -32,15 +32,25 @@ export function displayProjectList() {
   );
   removeAllChildNodes(projectListWrapper);
 
-  let projectListLabel = document.createElement("div");
-  projectListLabel.classList.add("label");
-  projectListLabel.textContent = "Projects";
-  projectListWrapper.appendChild(projectListLabel);
+  //----
+  const projectListLabelDiv = document.createElement("div");
+
+  const projectListLabelTextDiv = document.createElement("div");
+  projectListLabelTextDiv.classList.add("label-text");
+  projectListLabelTextDiv.textContent = "projects";
+
+  projectListLabelTextDiv.classList.add("tooltip");
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = "Add and remove project items here";
+  projectListLabelTextDiv.appendChild(tooltipText)
+  projectListLabelDiv.appendChild(projectListLabelTextDiv)
+  //----
 
   let projectList = document.createElement("div");
   projectList.classList.add("projects__project-list");
 
-  projectListWrapper.appendChild(projectListLabel);
+  projectListWrapper.appendChild(projectListLabelDiv);
   projectListWrapper.appendChild(projectList);
 
   let gridContainerDiv = document.createElement("div");
@@ -58,6 +68,7 @@ export function displayProjectList() {
       newIdArray.push(item.dataset.storageId);
     });
     Project.replaceIdArray(newIdArray);
+    
   });
 
   //get all projects from local storage ready to display
@@ -75,20 +86,10 @@ export function displayProjectList() {
     listItemContentDiv.classList.add("grid-item__content");
 
     //give content div behavior
-    Add_Component_Update_Storage_triggers(listItemContentDiv);
-    listItemContentDiv.addEventListener("updateNeeded", () => {
-      console.log("Update storage trigger fired 1",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
-      /* if (listItemTitleDiv.textContent === "") {
-        listItemTitleDiv.textContent = "Untitled";
-      } */
-      pj.title = listItemTitleDiv.textContent;
-      Project.saveToLocalStorage(pj);
-      displayProjectDetail(pj.storageId);
-    });
-
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       console.log("project selection event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+      console.log("pj.todoArr[0]: " + pj.todoArr[0]);
       selectedPjId = pj.storageId;
       displayProjectDetail(selectedPjId);
       const todosDetailsDiv = document.querySelector(".todo");
@@ -112,6 +113,17 @@ export function displayProjectList() {
     Add_Component_Max_Length(listItemTitleDiv, 30);
     listItemTitleDiv.addEventListener("maxLengthReached", () => {
       console.log("maxLengthReached event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+    });
+
+    Add_Component_Update_Storage_triggers(listItemTitleDiv);
+    listItemTitleDiv.addEventListener("updateNeeded", () => {
+      console.log("Update storage trigger fired 1",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+
+      console.log("Project todoArr[0]: " + pj.todoArr[0] )
+      pj.title = listItemTitleDiv.textContent;
+      console.log("Project todoArr[0]: " + pj.todoArr[0])
+      Project.saveToLocalStorage(pj);
+      displayProjectDetail(pj.storageId);
     });
 
     gridContainerDiv.appendChild(listItemDiv);
@@ -203,9 +215,20 @@ export function displayTodoList(pjId) {
   }
 
   const todoListLabelDiv = document.createElement("div");
-  todoListLabelDiv.classList.add("label");
-  todoListLabelDiv.textContent = "Todos";
-  todoListWrapperDiv.appendChild(todoListLabelDiv);
+
+  const todoListLabelTextDiv = document.createElement("div");
+  todoListLabelTextDiv.classList.add("label-text");
+  todoListLabelTextDiv.textContent = "Todos";
+
+  todoListLabelTextDiv.classList.add("tooltip");
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = "Add and remove Todo items here";
+
+
+  todoListLabelTextDiv.append(tooltipText);
+  todoListLabelDiv.appendChild(todoListLabelTextDiv);
+  todoListWrapperDiv.appendChild(todoListLabelTextDiv);
 
   const todoListDiv = document.createElement("div");
   todoListDiv.classList.add("project-todos__todo-list");
@@ -247,17 +270,6 @@ export function displayTodoList(pjId) {
     listItemContentDiv.classList.add("grid-item__content");
 
     //give content div behavior
-    Add_Component_Update_Storage_triggers(listItemContentDiv);
-    listItemContentDiv.addEventListener("updateNeeded", () => {
-      console.log("Update storage trigger fired 3",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
-      /* if (listItemTitleDiv.textContent === "") {
-        listItemTitleDiv.textContent = "Untitled";
-      } */
-      td.title = listItemTitleDiv.textContent;
-      Todo.saveToLocalStorage(td, pjId);
-      displayTodoDetail(tdId, pjId);
-    });
-
     Add_Component_Selectable(listItemContentDiv);
     listItemContentDiv.addEventListener("selected", (event) => {
       selectedTdId = td.storageId;
@@ -282,6 +294,16 @@ export function displayTodoList(pjId) {
     Add_Component_Max_Length(listItemTitleDiv, 36);
     listItemTitleDiv.addEventListener("maxLengthReached", () => {
       console.log("maxLengthReached event fired",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+    });
+    Add_Component_Update_Storage_triggers(listItemTitleDiv);
+    listItemTitleDiv.addEventListener("updateNeeded", () => {
+      console.log("Update storage trigger fired 3",  "selected pj: " + selectedPjId, "selected td: "+selectedTdId);
+      /* if (listItemTitleDiv.textContent === "") {
+        listItemTitleDiv.textContent = "Untitled";
+      } */
+      td.title = listItemTitleDiv.textContent;
+      Todo.saveToLocalStorage(td, pjId);
+      displayTodoDetail(tdId, pjId);
     });
 
     gridContainerDiv.appendChild(listItemDiv);
@@ -328,7 +350,7 @@ function displayTodoDetail(tdId, pjId) {
   dueDateWrapperDiv.classList.add("details__due-date-wrapper");
 
   const dueDateLabelDiv = document.createElement("div");
-  dueDateLabelDiv.classList.add("label");
+  dueDateLabelDiv.classList.add("label-text");
   dueDateLabelDiv.textContent = "Due Date";
   dueDateWrapperDiv.appendChild(dueDateLabelDiv);
 
@@ -342,7 +364,7 @@ function displayTodoDetail(tdId, pjId) {
   priorityWrapperDiv.classList.add("details__priority-wrapper");
 
   const priorityLabelDiv = document.createElement("div");
-  priorityLabelDiv.classList.add("label");
+  priorityLabelDiv.classList.add("label-text");
   priorityLabelDiv.textContent = "Priority";
   priorityWrapperDiv.appendChild(priorityLabelDiv);
 
@@ -437,7 +459,7 @@ function displayDeleteProjectButton() {
 
   const tooltipText = document.createElement("span");
   tooltipText.classList.add("tooltip-text");
-  tooltipText.textContent = "delete the currently selected project";
+  tooltipText.textContent = "remove the currently selected project";
 
   //btn.addEventListener("mouseup", );
 
@@ -463,7 +485,7 @@ function displayDeleteTodoButton(tdId) {
 
   const tooltipText = document.createElement("span");
   tooltipText.classList.add("tooltip-text");
-  tooltipText.textContent = "delete the currently selected to do";
+  tooltipText.textContent = "remove the currently selected to do";
 
   //btn.addEventListener("mouseup", );
 
@@ -523,8 +545,9 @@ function addProject() {
   const pjTitleDiv = pjContentDiv.querySelector(".grid-item__Title");
   const dblClick = new MouseEvent("dblclick");
   const mousedown = new MouseEvent("mousedown")
-  pjTitleDiv.parentNode.dispatchEvent(mousedown);
+  
   pjTitleDiv.parentNode.dispatchEvent(dblClick);
+  pjTitleDiv.parentNode.dispatchEvent(mousedown);
   
 }
 
@@ -533,6 +556,7 @@ function AddTodo() {
   const td = new Todo({ title: "", project: selectedPjId });
   Todo.saveToLocalStorage(td, selectedPjId);
   displayTodoList(selectedPjId);
+  displayProjectList();
   //focus on new Project
   const tdContentDiv = document.querySelector(
     `[data-storage-id = ${td.storageId}] `
