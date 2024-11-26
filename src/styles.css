@@ -5,6 +5,12 @@
   scroll-behavior: unset !important; */
 }
 
+svg {
+  aspect-ratio: 1/1;
+  height: 1.5rem;
+  fill:hsl(0, 0%, 23%); 
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -200,7 +206,6 @@ body {
 .grid-item__Title::selection {
   color: rgb(255, 255, 255);
   background: hsl(0, 0%, 50%);
-  border-radius: 0.25rem;
 }
 
 .project-todos__details {
