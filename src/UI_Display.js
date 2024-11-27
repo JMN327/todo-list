@@ -367,7 +367,7 @@ export function displayTodoList() {
     listItemTitleDiv.setAttribute("draggable", "false");
     listItemTitleDiv.setAttribute("contenteditable", "true");
     listItemTitleDiv.textContent = td.title;
-    Add_Component_Max_Length(listItemTitleDiv, 60);
+    Add_Component_Max_Length(listItemTitleDiv, 100);
     listItemTitleDiv.addEventListener("maxLengthReached", () => {
       console.log(
         "maxLengthReached event fired",
