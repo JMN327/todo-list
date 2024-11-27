@@ -359,10 +359,19 @@ export function displayTodoList() {
       );
     });
 
-    let listItemBorderDiv = document.createElement("div");
+    const listItemBorderDiv = document.createElement("div");
     listItemBorderDiv.classList.add("grid-item__border");
 
-    let listItemTitleDiv = document.createElement("div");
+    const listItemCompletedDiv = document.createElement("div")
+    listItemCompletedDiv.classList.add("grid-item__completed")
+    const listItemCompletedSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+    const listItemCompletedUse = document.createElementNS("http://www.w3.org/2000/svg", "use")
+    listItemCompletedUse.setAttribute("href","#svg-complete")
+    
+    listItemCompletedSvg.appendChild(listItemCompletedUse)
+    listItemCompletedDiv.appendChild(listItemCompletedSvg)
+
+    const listItemTitleDiv = document.createElement("div");
     listItemTitleDiv.classList.add("grid-item__Title", "editable");
     listItemTitleDiv.setAttribute("draggable", "false");
     listItemTitleDiv.setAttribute("contenteditable", "true");
@@ -393,6 +402,7 @@ export function displayTodoList() {
     gridContainerDiv.appendChild(listItemDiv);
     listItemDiv.appendChild(listItemContentDiv);
     listItemContentDiv.appendChild(listItemBorderDiv);
+    listItemContentDiv.appendChild(listItemCompletedDiv)
     listItemContentDiv.appendChild(listItemTitleDiv);
   });
 
@@ -478,9 +488,6 @@ function displayTodoDetail() {
   detailsDescriptionDiv.appendChild(detailsDescriptionBorderDiv);
   detailsDescriptionDiv.appendChild(detailsDescriptionTextDiv);
 
-  console.log(selectedTdId);
-  //selectedTdId = tdId;
-  console.log(selectedTdId);
   const selectedTodo = Todo.retrieveSingleFromLocalStorage(selectedTdId);
 
   detailsTitleTextDiv.textContent = selectedTodo.title;
@@ -530,8 +537,6 @@ function displayTodoDetail() {
       }
       console.log(date.getDate());
       dueDateDiv.textContent = format(date, "EEEE do MMMM yyyy");
-      // Do stuff when a date is selected (or unselected) on the calendar.
-      // You have access to the datepicker instance for convenience.
       selectedTodo.dueDate = date;
       Todo.saveToLocalStorage(selectedTodo, selectedPjId);
     },
