@@ -67,7 +67,7 @@ export default class Project {
 
   static retrieveTodos(pjId) {
     if (!pjId) {
-      return;
+      return [];
     }
     const todoIds = JSON.parse(localStorage.getItem(pjId)).todoArr;
     let todoArray = [];

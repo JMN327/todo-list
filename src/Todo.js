@@ -134,7 +134,7 @@ export default class Todo {
     if (!newDueDate) {
       this.#dueDate = null;
     } else {
-      newDueDate = format(newDueDate, "dd-MMM-yyyy");
+      newDueDate = format(newDueDate, "EEEE do MMMM yyyy");
       this.#dueDate = newDueDate;
     }
   }
