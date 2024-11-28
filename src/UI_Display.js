@@ -371,20 +371,36 @@ export function displayTodoList() {
     const gridItemBorderDiv = document.createElement("div");
     gridItemBorderDiv.classList.add("grid-item__border");
 
-    const gridItemCompletedDiv = document.createElement("div");
-    gridItemCompletedDiv.classList.add("grid-item__completed");
+    const gridItemCheckboxDiv = document.createElement("div");
+    gridItemCheckboxDiv.classList.add("grid-item__completed");
     const gridItemCompletedSvg = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "svg"
     );
+    gridItemCompletedSvg.classList.add("completed")
     const gridItemCompletedUse = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "use"
     );
-    gridItemCompletedUse.setAttribute("href", "#svg-complete");
+    gridItemCompletedUse.setAttribute("href", "#svg-check-circle");
+
+    const gridItemIncompleteSvg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+    gridItemIncompleteSvg.classList.add("incomplete")
+    const gridItemIncompleteUse = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "use"
+    );
+    gridItemIncompleteUse.setAttribute("href", "#svg-circle");
+
+    
 
     gridItemCompletedSvg.appendChild(gridItemCompletedUse);
-    gridItemCompletedDiv.appendChild(gridItemCompletedSvg);
+    gridItemIncompleteSvg.appendChild(gridItemIncompleteUse);
+    gridItemCheckboxDiv.appendChild(gridItemCompletedSvg);
+    gridItemCheckboxDiv.appendChild(gridItemIncompleteSvg);
 
     const gridItemTitleDiv = document.createElement("div");
     gridItemTitleDiv.classList.add("grid-item__Title", "editable");
@@ -419,7 +435,7 @@ export function displayTodoList() {
     gridContainerDiv.appendChild(gridItemDiv);
     gridItemDiv.appendChild(gridItemContentDiv);
     gridItemContentDiv.appendChild(gridItemBorderDiv);
-    gridItemContentDiv.appendChild(gridItemCompletedDiv);
+    gridItemContentDiv.appendChild(gridItemCheckboxDiv);
     gridItemContentDiv.appendChild(gridItemTitleDiv);
     gridItemContentDiv.appendChild(gridItemGrabber);
   });

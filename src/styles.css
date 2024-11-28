@@ -208,15 +208,43 @@ body {
 
 .grid-item__completed {
   z-index: 1;
-  margin-right: 0.75rem;
-  height: 1.5rem;
+  margin-right: 0.625rem;
+  aspect-ratio: 1/1;
+  height: 1.625rem;
 
-  svg {
+  svg.completed {
     aspect-ratio: 1/1;
     height: 1.5rem;
     scale: 1.25;
     fill: hsl(0, 0%, 41%);
     pointer-events: none;
+    display: none;
+  }
+
+  svg.incomplete {
+    aspect-ratio: 1/1;
+    height: 1.5rem;
+    scale: 1.25;
+    fill: hsl(0, 0%, 41%);
+    pointer-events: none;
+    display: inline;
+  }
+}
+
+.grid-item__completed:hover {
+  svg.completed {
+    display: inline;
+  }
+  svg.incomplete {
+    display: none;
+  }
+}
+
+.grid-item__completed:active {
+  svg.completed {
+    background-color: hsl(0, 0%, 41%);;
+    fill: white;
+    border-radius: 50%;
   }
 }
 
