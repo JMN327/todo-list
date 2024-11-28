@@ -72,7 +72,10 @@ export function displayProjectList() {
   projectListWrapper.appendChild(projectListHeadingDiv);
   projectListWrapper.appendChild(projectList);
 
-  Add_Component_Drag_Drop_Container(gridContainerDiv);
+  Add_Component_Drag_Drop_Container(gridContainerDiv, [
+    "grid-item__content",
+    "grid-item__Title",
+  ]);
   //Update the order of stored projects to reflect a drag/drop event
   gridContainerDiv.addEventListener("dragDrop", () => {
     console.log(
@@ -94,17 +97,17 @@ export function displayProjectList() {
   // Loop through all projects in storage to create the project list
   allProjects.forEach((pj) => {
     //Make div and add drag drop item functionality
-    let listItemDiv = document.createElement("div");
-    Add_Component_Drag_Drop_Item(listItemDiv);
+    const gridItemDiv = document.createElement("div");
+    Add_Component_Drag_Drop_Item(gridItemDiv);
 
     //Add content div to list items
-    let listItemContentDiv = document.createElement("div");
-    listItemContentDiv.setAttribute("data-storage-id", pj.storageId);
-    listItemContentDiv.classList.add("grid-item__content");
+    const gridItemContentDiv = document.createElement("div");
+    gridItemContentDiv.setAttribute("data-storage-id", pj.storageId);
+    gridItemContentDiv.classList.add("grid-item__content");
 
     //give content div behavior
-    Add_Component_Selectable(listItemContentDiv);
-    listItemContentDiv.addEventListener("selected", (event) => {
+    Add_Component_Selectable(gridItemContentDiv);
+    gridItemContentDiv.addEventListener("selected", (event) => {
       console.log(
         "project selection event fired",
         "selected pj: " + selectedPjId,
@@ -117,8 +120,8 @@ export function displayProjectList() {
       removeAllChildNodes(todosDetailsDiv);
     });
 
-    Add_Component_Double_Click_Cursor(listItemContentDiv);
-    listItemContentDiv.addEventListener("doubleClickCursor", (event) => {
+    Add_Component_Double_Click_Cursor(gridItemContentDiv);
+    gridItemContentDiv.addEventListener("doubleClickCursor", (event) => {
       console.log(
         "doubleClickCursor event fired",
         "selected pj: " + selectedPjId,
@@ -126,16 +129,16 @@ export function displayProjectList() {
       );
     });
 
-    let listItemBorderDiv = document.createElement("div");
-    listItemBorderDiv.classList.add("grid-item__border");
+    const gridItemBorderDiv = document.createElement("div");
+    gridItemBorderDiv.classList.add("grid-item__border");
 
-    let listItemTitleDiv = document.createElement("div");
-    listItemTitleDiv.classList.add("grid-item__Title", "editable");
-    listItemTitleDiv.setAttribute("draggable", "false");
-    listItemTitleDiv.setAttribute("contenteditable", "true");
-    listItemTitleDiv.textContent = pj.title;
-    Add_Component_Max_Length(listItemTitleDiv, 30);
-    listItemTitleDiv.addEventListener("maxLengthReached", () => {
+    const gridItemTitleDiv = document.createElement("div");
+    gridItemTitleDiv.classList.add("grid-item__Title", "editable");
+    gridItemTitleDiv.setAttribute("draggable", "false");
+    gridItemTitleDiv.setAttribute("contenteditable", "true");
+    gridItemTitleDiv.textContent = pj.title;
+    Add_Component_Max_Length(gridItemTitleDiv, 30);
+    gridItemTitleDiv.addEventListener("maxLengthReached", () => {
       console.log(
         "maxLengthReached event fired",
         "selected pj: " + selectedPjId,
@@ -143,8 +146,8 @@ export function displayProjectList() {
       );
     });
 
-    Add_Component_Update_Storage_triggers(listItemTitleDiv);
-    listItemTitleDiv.addEventListener("updateNeeded", () => {
+    Add_Component_Update_Storage_triggers(gridItemTitleDiv);
+    gridItemTitleDiv.addEventListener("updateNeeded", () => {
       console.log(
         "Update storage trigger fired 1",
         "selected pj: " + selectedPjId,
@@ -152,16 +155,19 @@ export function displayProjectList() {
       );
 
       console.log("Project todoArr[0]: " + pj.todoArr[0]);
-      pj.title = listItemTitleDiv.textContent;
+      pj.title = gridItemTitleDiv.textContent;
       console.log("Project todoArr[0]: " + pj.todoArr[0]);
       Project.saveToLocalStorage(pj);
       displayProjectDetail();
     });
 
-    gridContainerDiv.appendChild(listItemDiv);
-    listItemDiv.appendChild(listItemContentDiv);
-    listItemContentDiv.appendChild(listItemBorderDiv);
-    listItemContentDiv.appendChild(listItemTitleDiv);
+    const gridItemGrabber = makeGridItemGrabber();
+
+    gridContainerDiv.appendChild(gridItemDiv);
+    gridItemDiv.appendChild(gridItemContentDiv);
+    gridItemContentDiv.appendChild(gridItemBorderDiv);
+    gridItemContentDiv.appendChild(gridItemTitleDiv);
+    gridItemContentDiv.appendChild(gridItemGrabber);
   });
 
   displayDeleteProjectButton();
@@ -251,8 +257,7 @@ export function displayProjectDetail() {
 
 export function displayTodoList() {
   console.log(
-    "displaying Todo List " +
-    "selected pj: " + selectedPjId,
+    "displaying Todo List " + "selected pj: " + selectedPjId,
     "selected td: " + selectedTdId
   );
   //remove previous nodes in the list
@@ -304,7 +309,11 @@ export function displayTodoList() {
   todoListWrapperDiv.appendChild(todoList);
   //---
 
-  Add_Component_Drag_Drop_Container(gridContainerDiv);
+  Add_Component_Drag_Drop_Container(gridContainerDiv, [
+    "grid-item__content",
+    "grid-item__Title",
+    "grid-item__completed",
+  ]);
   //Update the order of stored todos to reflect a drag/drop event
   gridContainerDiv.addEventListener("dragDrop", () => {
     console.log(
@@ -330,17 +339,17 @@ export function displayTodoList() {
   projectTodos.forEach((td) => {
     const tdId = td.storageId;
     //Make div and add drag drop item functionality
-    let listItemDiv = document.createElement("div");
-    Add_Component_Drag_Drop_Item(listItemDiv);
+    let gridItemDiv = document.createElement("div");
+    Add_Component_Drag_Drop_Item(gridItemDiv);
 
     //Add content div to list items
-    let listItemContentDiv = document.createElement("div");
-    listItemContentDiv.setAttribute("data-storage-id", tdId);
-    listItemContentDiv.classList.add("grid-item__content");
+    let gridItemContentDiv = document.createElement("div");
+    gridItemContentDiv.setAttribute("data-storage-id", tdId);
+    gridItemContentDiv.classList.add("grid-item__content");
 
     //give content div behavior
-    Add_Component_Selectable(listItemContentDiv);
-    listItemContentDiv.addEventListener("selected", (event) => {
+    Add_Component_Selectable(gridItemContentDiv);
+    gridItemContentDiv.addEventListener("selected", (event) => {
       selectedTdId = td.storageId;
       console.log(
         "Todo selection event fired",
@@ -350,8 +359,8 @@ export function displayTodoList() {
       displayTodoDetail();
     });
 
-    Add_Component_Double_Click_Cursor(listItemContentDiv);
-    listItemContentDiv.addEventListener("doubleClickCursor", (event) => {
+    Add_Component_Double_Click_Cursor(gridItemContentDiv);
+    gridItemContentDiv.addEventListener("doubleClickCursor", (event) => {
       console.log(
         "doubleClickCursor event fired",
         "selected pj: " + selectedPjId,
@@ -359,33 +368,39 @@ export function displayTodoList() {
       );
     });
 
-    const listItemBorderDiv = document.createElement("div");
-    listItemBorderDiv.classList.add("grid-item__border");
+    const gridItemBorderDiv = document.createElement("div");
+    gridItemBorderDiv.classList.add("grid-item__border");
 
-    const listItemCompletedDiv = document.createElement("div")
-    listItemCompletedDiv.classList.add("grid-item__completed")
-    const listItemCompletedSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-    const listItemCompletedUse = document.createElementNS("http://www.w3.org/2000/svg", "use")
-    listItemCompletedUse.setAttribute("href","#svg-complete")
-    
-    listItemCompletedSvg.appendChild(listItemCompletedUse)
-    listItemCompletedDiv.appendChild(listItemCompletedSvg)
+    const gridItemCompletedDiv = document.createElement("div");
+    gridItemCompletedDiv.classList.add("grid-item__completed");
+    const gridItemCompletedSvg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+    const gridItemCompletedUse = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "use"
+    );
+    gridItemCompletedUse.setAttribute("href", "#svg-complete");
 
-    const listItemTitleDiv = document.createElement("div");
-    listItemTitleDiv.classList.add("grid-item__Title", "editable");
-    listItemTitleDiv.setAttribute("draggable", "false");
-    listItemTitleDiv.setAttribute("contenteditable", "true");
-    listItemTitleDiv.textContent = td.title;
-    Add_Component_Max_Length(listItemTitleDiv, 100);
-    listItemTitleDiv.addEventListener("maxLengthReached", () => {
+    gridItemCompletedSvg.appendChild(gridItemCompletedUse);
+    gridItemCompletedDiv.appendChild(gridItemCompletedSvg);
+
+    const gridItemTitleDiv = document.createElement("div");
+    gridItemTitleDiv.classList.add("grid-item__Title", "editable");
+    gridItemTitleDiv.setAttribute("draggable", "false");
+    gridItemTitleDiv.setAttribute("contenteditable", "true");
+    gridItemTitleDiv.textContent = td.title;
+    Add_Component_Max_Length(gridItemTitleDiv, 100);
+    gridItemTitleDiv.addEventListener("maxLengthReached", () => {
       console.log(
         "maxLengthReached event fired",
         "selected pj: " + selectedPjId,
         "selected td: " + selectedTdId
       );
     });
-    Add_Component_Update_Storage_triggers(listItemTitleDiv);
-    listItemTitleDiv.addEventListener("updateNeeded", () => {
+    Add_Component_Update_Storage_triggers(gridItemTitleDiv);
+    gridItemTitleDiv.addEventListener("updateNeeded", () => {
       console.log(
         "Update storage trigger fired 3",
         "selected pj: " + selectedPjId,
@@ -394,16 +409,19 @@ export function displayTodoList() {
       /* if (listItemTitleDiv.textContent === "") {
         listItemTitleDiv.textContent = "Untitled";
       } */
-      td.title = listItemTitleDiv.textContent;
+      td.title = gridItemTitleDiv.textContent;
       Todo.saveToLocalStorage(td, selectedPjId);
       displayTodoDetail();
     });
 
-    gridContainerDiv.appendChild(listItemDiv);
-    listItemDiv.appendChild(listItemContentDiv);
-    listItemContentDiv.appendChild(listItemBorderDiv);
-    listItemContentDiv.appendChild(listItemCompletedDiv)
-    listItemContentDiv.appendChild(listItemTitleDiv);
+    const gridItemGrabber = makeGridItemGrabber();
+
+    gridContainerDiv.appendChild(gridItemDiv);
+    gridItemDiv.appendChild(gridItemContentDiv);
+    gridItemContentDiv.appendChild(gridItemBorderDiv);
+    gridItemContentDiv.appendChild(gridItemCompletedDiv);
+    gridItemContentDiv.appendChild(gridItemTitleDiv);
+    gridItemContentDiv.appendChild(gridItemGrabber);
   });
 
   displayAddTodoButton();
@@ -690,4 +708,22 @@ function deleteTodo() {
   selectedTdId = "";
   displayTodoList(selectedPjId);
   displayTodoDetail();
+}
+
+function makeGridItemGrabber() {
+  const gig = document.createElement("div");
+  gig.classList.add("grid-item-grabber");
+  const gridItemGrabberSvg = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+  const gridItemGrabberUse = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "use"
+  );
+  gridItemGrabberUse.setAttribute("href", "#svg-grab");
+  gridItemGrabberSvg.appendChild(gridItemGrabberUse);
+  gig.appendChild(gridItemGrabberSvg);
+
+  return gig;
 }

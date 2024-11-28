@@ -1,4 +1,7 @@
-export function Add_Component_Drag_Drop_Container(gridContainer) {
+export function Add_Component_Drag_Drop_Container(
+  gridContainer,
+  nonGrabClassArr
+) {
   gridContainer.classList.add("grid-container");
   const gridContainerStyles = getComputedStyle(gridContainer);
   let gap = parseInt(gridContainerStyles.getPropertyValue("gap"));
@@ -51,11 +54,11 @@ export function Add_Component_Drag_Drop_Container(gridContainer) {
   }
 
   function pickUpGridItem(event) {
-    if (event.target.classList.contains("grid-item__Title")) {
-      return;
-    }
+    let earlyExitCheck = nonGrabClassArr.some((CssClass) =>
+      event.target.classList.contains(CssClass)
+    );
 
-    if (event.target.classList.contains("trash-button")) {
+    if (earlyExitCheck) {
       return;
     }
 

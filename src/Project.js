@@ -131,10 +131,6 @@ export default class Project {
       defaultProject.title = "Default Project";
       defaultProject.description = "This is the default project";
       Project.saveToLocalStorage(defaultProject);
-      let secondPj = new Project();
-      secondPj.title = "2nd";
-      secondPj.description = "This is the 2nd project";
-      Project.saveToLocalStorage(secondPj);
     }
   }
 
