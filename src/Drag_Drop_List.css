@@ -12,7 +12,7 @@
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
     /* scroll-snap-align: top */
   }
   

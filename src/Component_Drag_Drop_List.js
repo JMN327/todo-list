@@ -1,5 +1,4 @@
 export function Add_Component_Drag_Drop_Container(gridContainer) {
-  
   gridContainer.classList.add("grid-container");
   const gridContainerStyles = getComputedStyle(gridContainer);
   let gap = parseInt(gridContainerStyles.getPropertyValue("gap"));
@@ -11,9 +10,9 @@ export function Add_Component_Drag_Drop_Container(gridContainer) {
 
   let item = null;
   let itemAbove = null;
-  let itemAboveBottomY = null;
+  let itemAboveTopY = null;
   let itemBelow = null;
-  let itemBelowTopY = null;
+  let itemBelowBottomY = null;
   let gridContainerTop = null;
   let pointerOffset = null;
   let initialItemPosY = null;
@@ -72,15 +71,6 @@ export function Add_Component_Drag_Drop_Container(gridContainer) {
       return;
     }
 
-    /*       let parent = item.parentNode;
-      for (const child of parent.children) {
-        child.children[0].classList.remove("selected");
-      }
-
-      if (item.hasChildNodes()) {
-        item.firstChild.classList.add("selected");
-      } */
-
     item.style.zIndex = 1000;
     gridContainerTop = gridContainer.getBoundingClientRect().top;
     initialItemPosY = item.getBoundingClientRect().top;
@@ -105,7 +95,7 @@ export function Add_Component_Drag_Drop_Container(gridContainer) {
 
     //swap if higher than item above
     if (itemAbove) {
-      if (itemContainerBottomY <= itemAboveBottomY) {
+      if (itemContainerTopY <= itemAboveTopY) {
         let itemHeightSnapshot = itemAbove.offsetHeight;
         switchOffset += gap + itemHeightSnapshot;
         item.parentNode.insertBefore(item, itemAbove);
@@ -117,7 +107,7 @@ export function Add_Component_Drag_Drop_Container(gridContainer) {
 
     //swap if lower than item below
     if (itemBelow) {
-      if (itemContainerTopY >= itemBelowTopY) {
+      if (itemContainerBottomY >= itemBelowBottomY) {
         let itemHeightSnapshot = itemBelow.offsetHeight;
         switchOffset -= gap + itemHeightSnapshot;
         item.parentNode.insertBefore(item, itemBelow.nextElementSibling);
@@ -160,9 +150,9 @@ export function Add_Component_Drag_Drop_Container(gridContainer) {
       item.classList.remove("moving");
       item = null;
       itemAbove = null;
-      itemAboveBottomY = null;
+      itemAboveTopY = null;
       itemBelow = null;
-      itemBelowTopY = null;
+      itemBelowBottomY = null;
       gridContainerTop = null;
       pointerOffset = null;
       initialItemPosY = null;
@@ -178,13 +168,13 @@ export function Add_Component_Drag_Drop_Container(gridContainer) {
     itemAbove = currentItem.previousElementSibling;
     itemBelow = currentItem.nextElementSibling;
     if (itemAbove) {
-      itemAboveBottomY =
-        itemAbove.getBoundingClientRect().top +
-        itemAbove.offsetHeight -
-        gridContainerTop;
+      itemAboveTopY = itemAbove.getBoundingClientRect().top - gridContainerTop;
     }
     if (itemBelow) {
-      itemBelowTopY = itemBelow.getBoundingClientRect().top - gridContainerTop;
+      itemBelowBottomY =
+        itemBelow.getBoundingClientRect().top +
+        itemBelow.offsetHeight -
+        gridContainerTop;
     }
   }
 
