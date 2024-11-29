@@ -25,33 +25,17 @@ export function Add_Component_Drag_Drop_Container(
   let switchOffset = 0;
   let animating = false;
 
-  let sticky = false;
-
   gridContainer.addEventListener("dragstart", (event) => {
     event.preventDefault();
   });
 
   gridContainer.addEventListener("mousedown", (event) => pickUpGridItem(event));
-  gridContainer.addEventListener("mousemove", (event) => moveGridItem(event));
-  gridContainer.addEventListener("mouseup", (event) => releaseGridItem(event));
+  document.body.addEventListener("mousemove", (event) => moveGridItem(event));
+  document.body.addEventListener("mouseup", (event) => releaseGridItem(event));
 
   gridContainer.addEventListener("contextmenu", (event) => {
     event.preventDefault();
   });
-
-  if (sticky) {
-    gridContainer.addEventListener("mouseenter", (event) => {
-      if (event.buttons !== 1) {
-        releaseGridItem(event);
-      }
-    });
-  } else {
-    gridContainer.addEventListener("mouseleave", (event) => {
-      if (event.buttons == 1) {
-        releaseGridItem(event);
-      }
-    });
-  }
 
   function pickUpGridItem(event) {
     let earlyExitCheck = nonGrabClassArr.some((CssClass) =>

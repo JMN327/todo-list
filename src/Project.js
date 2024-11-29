@@ -49,7 +49,7 @@ export default class Project {
       storageId: pj.storageId,
       createdDate: pj.createdDate,
     };
-    console.log("tda: " + pjData.todoArr + " " + pj.title);
+
     // write the project data to storage
     localStorage.setItem(pj.#storageId, JSON.stringify(pjData));
 

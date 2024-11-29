@@ -327,9 +327,9 @@ body {
 }
 
 .details__description {
-  border-bottom: 4px solid rgb(214, 214, 214);
-  border-left: 4px solid rgb(214, 214, 214);
-  border-right: 4px solid rgb(214, 214, 214);
+  border-bottom: 0.25rem solid rgb(214, 214, 214);
+  border-left: 0.25rem solid rgb(214, 214, 214);
+  border-right: 0.25rem solid rgb(214, 214, 214);
   color: hsl(0, 0%, 35%);
   padding: 1rem;
   padding-left: 1.25rem;
