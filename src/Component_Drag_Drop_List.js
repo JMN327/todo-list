@@ -33,8 +33,14 @@ export function Add_Component_Drag_Drop_Container(
   document.body.addEventListener("mousemove", (event) => moveGridItem(event));
   document.body.addEventListener("mouseup", (event) => releaseGridItem(event));
 
-  gridContainer.addEventListener("contextmenu", (event) => {
+/*   gridContainer.addEventListener("contextmenu", (event) => {
     event.preventDefault();
+  }); */
+
+  document.body.addEventListener("mouseleave", (event) => {
+    if (event.buttons == 1) {
+      releaseGridItem(event);
+    }
   });
 
   function pickUpGridItem(event) {
