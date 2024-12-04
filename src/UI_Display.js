@@ -368,6 +368,15 @@ export function displayTodoList() {
     );
     gridItemIncompleteUse.setAttribute("href", "#svg-circle");
 
+    if (td.completed) {
+      //gridItemCompletedSvg.style.display = "inline"
+      //gridItemIncompleteSvg.style.display = "none"
+      gridItemCheckboxDiv.dataset.completed = true
+    } else {
+      //gridItemCompletedSvg.style.display = "none"
+      //gridItemIncompleteSvg.style.display = "inline"
+      gridItemCheckboxDiv.dataset.completed = false
+    }
     
 
     gridItemCompletedSvg.appendChild(gridItemCompletedUse);
@@ -400,6 +409,16 @@ export function displayTodoList() {
     });
 
     const gridItemGrabber = makeGridItemGrabber();
+
+    gridItemCheckboxDiv.addEventListener("mouseup", (event) => {
+      console.log("selected todo " + selectedTdId)
+      td = Todo.retrieveSingleFromLocalStorage(selectedTdId)
+      td.completed ? td.completed = false : td.completed = true
+      
+      Todo.saveToLocalStorage(td, selectedPjId)
+      displayTodoList();
+      displayTodoDetail();
+    })
 
     gridContainerDiv.appendChild(gridItemDiv);
     gridItemDiv.appendChild(gridItemContentDiv);

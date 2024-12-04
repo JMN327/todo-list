@@ -218,7 +218,6 @@ body {
     scale: 1.25;
     fill: hsl(0, 0%, 41%);
     pointer-events: none;
-    display: none;
   }
 
   svg.incomplete {
@@ -227,11 +226,63 @@ body {
     scale: 1.25;
     fill: hsl(0, 0%, 41%);
     pointer-events: none;
+  }
+}
+
+.grid-item__completed[data-completed="true"] {
+  svg.completed {
+    display: inline;
+  }
+  svg.incomplete {
+    display: none;
+  }
+}
+
+.grid-item__completed[data-completed="false"] {
+  svg.completed {
+    display: none;
+  }
+  svg.incomplete {
     display: inline;
   }
 }
 
-.grid-item__completed:hover {
+.grid-item__completed[data-completed="false"]:hover {
+  /* svg.completed {
+    display: inline;
+  } */
+  svg.incomplete {
+    /* display: none; */
+    /* fill: blue; */
+    stroke-width: 2px;
+  }
+}
+
+.grid-item__completed[data-completed="false"]:active {
+  svg.completed {
+    display: inline;
+    background-color: hsl(0, 0%, 41%);;
+    fill: hsl(0, 0%, 97%);
+    border-radius: 50%;
+  }
+  svg.incomplete {
+    display: none;
+  }
+}
+.grid-item__completed[data-completed="true"]:active {
+  svg.completed {
+    display: none;
+  }
+  svg.incomplete {
+    
+    display: inline;
+    background-color: hsl(0, 0%, 41%);
+    fill: hsl(0, 0%, 97%);
+    border-radius: 50%;
+  }
+}
+
+/* .grid-item__completed:hover {
   svg.completed {
     display: inline;
   }
@@ -246,7 +297,12 @@ body {
     fill: white;
     border-radius: 50%;
   }
-}
+  svg.incomplete {
+    background-color: hsl(0, 0%, 41%);;
+    fill: white;
+    border-radius: 50%;
+  }
+} */
 
 .grid-item__Title {
   cursor: text;

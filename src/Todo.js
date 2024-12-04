@@ -152,7 +152,9 @@ export default class Todo {
   }
 
   set completed(newCompleted) {
-    this.#completed = newCompleted;
+    if (newCompleted === true || newCompleted === false) {
+      this.#completed = newCompleted;
+  }
   }
 
   get completed() {
