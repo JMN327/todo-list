@@ -12,7 +12,8 @@ import Todo from "./Todo.js";
 import datepicker from "js-datepicker";
 import "js-datepicker/dist/datepicker.min.css";
 import { format } from "date-fns";
-const rater = require("rater-js");
+//const rater = require("rater-js");
+import rater from "rater-js";
 
 let selectedPjId;
 let selectedTdId;
@@ -103,7 +104,7 @@ export function displayProjectList() {
 
     //give content div behavior
     Add_Component_Selectable(gridItemContentDiv);
-    gridItemContentDiv.addEventListener("selected", (event) => {
+    gridItemContentDiv.addEventListener("selected", () => {
       console.log(
         "project selection event fired"
       );
@@ -115,7 +116,7 @@ export function displayProjectList() {
     });
 
     Add_Component_Double_Click_Cursor(gridItemContentDiv);
-    gridItemContentDiv.addEventListener("doubleClickCursor", (event) => {
+    gridItemContentDiv.addEventListener("doubleClickCursor", () => {
       console.log(
         "doubleClickCursor event fired"
       );
@@ -207,7 +208,7 @@ export function displayProjectDetail() {
   detailsDescriptionTextDiv.textContent = pj.description;
 
   Add_Component_Double_Click_Cursor(detailsDescriptionDiv);
-  detailsDescriptionDiv.addEventListener("doubleClickCursor", (event) => {
+  detailsDescriptionDiv.addEventListener("doubleClickCursor", () => {
     console.log(
       "doubleClickCursor event fired"
     );
@@ -326,7 +327,7 @@ export function displayTodoList() {
 
     //give content div behavior
     Add_Component_Selectable(gridItemContentDiv);
-    gridItemContentDiv.addEventListener("selected", (event) => {
+    gridItemContentDiv.addEventListener("selected", () => {
       selectedTdId = td.storageId;
       console.log(
         "Todo selection event fired"
@@ -335,7 +336,7 @@ export function displayTodoList() {
     });
 
     Add_Component_Double_Click_Cursor(gridItemContentDiv);
-    gridItemContentDiv.addEventListener("doubleClickCursor", (event) => {
+    gridItemContentDiv.addEventListener("doubleClickCursor", () => {
       console.log(
         "doubleClickCursor event fired"
       );
@@ -410,7 +411,7 @@ export function displayTodoList() {
 
     const gridItemGrabber = makeGridItemGrabber();
 
-    gridItemCheckboxDiv.addEventListener("mouseup", (event) => {
+    gridItemCheckboxDiv.addEventListener("mouseup", () => {
       console.log("selected todo " + selectedTdId)
       td = Todo.retrieveSingleFromLocalStorage(selectedTdId)
       td.completed ? td.completed = false : td.completed = true
@@ -517,7 +518,7 @@ function displayTodoDetail() {
   dueDateDiv.textContent = selectedTodo.dueDate;
 
   Add_Component_Double_Click_Cursor(detailsDescriptionDiv);
-  detailsDescriptionDiv.addEventListener("doubleClickCursor", (event) => {
+  detailsDescriptionDiv.addEventListener("doubleClickCursor", () => {
     console.log(
       "doubleClickCursor event fired"
     );
@@ -555,6 +556,7 @@ function displayTodoDetail() {
       Todo.saveToLocalStorage(selectedTodo, selectedPjId);
     },
   });
+  console.log(picker);
 
   const myRater = rater({
     element: document.querySelector(".rater"),
